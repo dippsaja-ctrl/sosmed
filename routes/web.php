@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SocialAccountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +46,13 @@ Route::get('/privacy-policy', function () {
 // Halaman Syarat Layanan (Terms of Service)
 Route::get('/terms-of-service', function () {
         return view('terms');
+});
+
+// sosial akun
+Route::middleware('auth')->group(function () {
+    Route::get('/social-accounts', [SocialAccountController::class, 'index'])->name('social-accounts.index');
+    Route::get('/social-accounts/{platform}/redirect', [SocialAccountController::class, 'redirect'])->name('social-accounts.redirect');
+    Route::delete('/social-accounts/{platform}', [SocialAccountController::class, 'destroy'])->name('social-accounts.destroy');
 });
 
 // Sistem Otentikasi bawaan Laravel (Login, Register, Logout, dll)
