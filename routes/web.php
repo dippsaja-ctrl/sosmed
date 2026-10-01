@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SocialAccountController;
+use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Controllers\Auth\TiktokAuthController;
 use Illuminate\Support\Facades\Route;
 use Google\Client;
 
@@ -136,5 +138,19 @@ Route::middleware('auth')->group(function () {
     Route::delete('/social-accounts/{platform}', [SocialAccountController::class, 'destroy'])->name('social-accounts.destroy');
 });
 
-// Sistem Otentikasi bawaan Laravel
+Route::middleware('auth')->group(function () {
+    Route::get('/auth/{platform}/redirect', [SocialAuthController::class, 'redirect'])
+        ->whereIn('platform', ['facebook', 'google'])
+        ->name('social.redirect');
+
+    Route::get('/auth/{platform}/callback', [SocialAuthController::class, 'callback'])
+        ->whereIn('platform', ['facebook', 'google'])
+        ->name('social.callback');
+});
+
+// TikTok
+Route::get('/auth/tiktok', [TiktokAuthController::class, 'redirect'])->name('tiktok.redirect');
+Route::get('/auth/tiktok/callback', [TiktokAuthController::class, 'callback'])->name('tiktok.callback');
+
+// Sistem Otentikasi bawaan Laravel (Login, Register, Logout, dll)
 require __DIR__.'/auth.php';
