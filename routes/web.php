@@ -152,5 +152,10 @@ Route::middleware('auth')->group(function () {
 Route::get('/auth/tiktok', [TiktokAuthController::class, 'redirect'])->name('tiktok.redirect');
 Route::get('/auth/tiktok/callback', [TiktokAuthController::class, 'callback'])->name('tiktok.callback');
 
+// Youtube
+Route::post('/youtube/upload', function () {
+    return 'Data upload diterima!';
+});
+
 // Sistem Otentikasi bawaan Laravel (Login, Register, Logout, dll)
 require __DIR__.'/auth.php';
