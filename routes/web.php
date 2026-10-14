@@ -1,14 +1,12 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\TikTokController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Route;
 use Google\Client;
-8e5165d21f43555af403a65e3d6606b3dabdc610
 
 Route::get('/', fn () => view('auth.welcome'))->name('welcome');
 
@@ -39,7 +37,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/auth/tiktok/redirect', [TikTokController::class, 'redirectToProvider']);
 
 Route::get('/auth/tiktok/callback', [TikTokController::class, 'handleProviderCallback']);
-=======
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -277,4 +275,3 @@ Route::get('/facebook/test-token', function () {
 */
 
 require __DIR__ . '/auth.php';
-8e5165d21f43555af403a65e3d6606b3dabdc610
