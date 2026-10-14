@@ -1,47 +1,35 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+@extends('layouts.auth')
+@section('title', 'Log in')
 
-    <form method="POST" action="{{ route('login') }}">
+@section('content')
+    <h1 class="title">Welcome Back</h1>
+    <p class="lead">Ready to continue your learning journey?<br>Your path is right here</p>
+
+    <form method="POST" action="{{ route('login') }}" class="form" novalidate>
         @csrf
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <label for="email">Email:</label>
+        <input id="email" type="email" name="email" value="{{ old('email') }}"
+               placeholder="name@gmail.com" autocomplete="email" required autofocus>
+        @error('email') <p class="error">{{ $message }}</p> @enderror
+
+        <label for="password">Password:</label>
+        <div class="password">
+            <input id="password" type="password" name="password" autocomplete="current-password" required>
+            <button type="button" class="eye" data-toggle="password" aria-label="Tampilkan password">👁</button>
+        </div>
+        @error('password') <p class="error">{{ $message }}</p> @enderror
+
+        <div class="row">
+            <label class="check"><input type="checkbox" name="remember"> Remember me</label>
+            <a href="#" class="link">Forgot password?</a>
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
+        <button type="submit" class="btn">LOG IN</button>
     </form>
-</x-guest-layout>
+
+    @include('auth._social')
+
+    <p class="switch">Belum punya akun? <a href="{{ route('register') }}">Daftar</a></p>
+    <script src="{{ asset('js/auth.js') }}"></script>
+@endsection

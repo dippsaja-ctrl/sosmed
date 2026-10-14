@@ -1,0 +1,128 @@
+:root {
+    --pink-100: #fde4ee;
+    --pink-300: #f4a6c6;
+    --berry: #b0125f;
+    --berry-dark: #8a0e4b;
+    --ink: #2b1020;
+    --white: #fff;
+    --sans: "Poppins", system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+
+body {
+    margin: 0;
+    min-height: 100%;
+    display: grid;
+    place-items: center;
+    padding: 24px 16px;
+    font-family: var(--sans);
+    color: var(--ink);
+    position: relative;
+    overflow-x: hidden;
+    /* pola gingham pink */
+    background-color: var(--pink-100);
+    background-image:
+        linear-gradient(90deg, rgba(244, 166, 198, .55) 50%, transparent 50%),
+        linear-gradient(rgba(244, 166, 198, .55) 50%, transparent 50%);
+    background-size: 56px 56px;
+}
+
+/* bintang dekoratif */
+.star {
+    position: absolute;
+    width: 90px; height: 90px;
+    background: var(--pink-300);
+    opacity: .55;
+    clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    pointer-events: none;
+}
+.star--a { top: 8%; left: 7%; transform: rotate(-14deg); }
+.star--b { bottom: 10%; right: 9%; width: 120px; height: 120px; transform: rotate(12deg); }
+.star--c { top: 18%; right: 16%; width: 50px; height: 50px; }
+
+.panel {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    padding: 32px 28px;
+    text-align: center;
+    background: rgba(255, 255, 255, .72);
+    backdrop-filter: blur(3px);
+    border-radius: 20px;
+}
+
+.title { margin: 0 0 8px; font-size: 1.9rem; font-weight: 500; letter-spacing: .02em; }
+.lead { margin: 0 0 24px; font-size: .92rem; line-height: 1.6; }
+
+/* form */
+.form { text-align: left; }
+.form label { display: block; margin: 14px 0 4px; font-size: .85rem; font-weight: 500; }
+
+input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    height: 42px;
+    padding: 0 14px;
+    font: inherit;
+    font-size: .9rem;
+    color: var(--white);
+    background: var(--berry);
+    border: 2px solid transparent;
+    border-radius: 6px;
+}
+input::placeholder { color: rgba(255, 255, 255, .7); }
+input:focus-visible { outline: 3px solid var(--pink-300); outline-offset: 2px; }
+
+.password { position: relative; }
+.eye {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    background: none; border: 0; cursor: pointer; font-size: 1rem; color: var(--white);
+}
+
+.row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: .75rem; }
+.row .check { display: flex; align-items: center; gap: 6px; margin: 0; font-weight: 400; font-size: .75rem; }
+.link { color: var(--ink); }
+.error { margin: 4px 0 0; font-size: .75rem; color: #c1121f; }
+
+/* tombol */
+.btn {
+    display: block;
+    width: 100%;
+    margin: 18px auto 0;
+    padding: 12px 16px;
+    font: inherit;
+    font-size: .85rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-align: center;
+    text-decoration: none;
+    color: var(--white);
+    background: var(--berry);
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .15s, transform .15s;
+}
+.btn:hover { background: var(--berry-dark); }
+.btn:active { transform: scale(.98); }
+.btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+/* login sosial */
+.divider { display: flex; align-items: center; gap: 10px; margin: 22px 0 12px; font-size: .72rem; }
+.divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: rgba(43, 16, 32, .35); }
+.social { display: flex; justify-content: center; gap: 18px; }
+.social a {
+    display: grid; place-items: center;
+    width: 40px; height: 40px;
+    background: var(--white);
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(176, 18, 95, .25);
+}
+.social a:focus-visible { outline: 3px solid var(--berry); outline-offset: 2px; }
+.social svg { width: 20px; height: 20px; }
+
+.switch { margin: 18px 0 0; font-size: .8rem; }
+.switch a { color: var(--berry); font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
