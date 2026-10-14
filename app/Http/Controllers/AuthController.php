@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
@@ -20,6 +21,10 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'email'    => ['required', 'email'],
             'password' => ['required'],
+        ], [
+            'email.required'    => 'Email wajib diisi.',
+            'email.email'       => 'Format email tidak valid.',
+            'password.required' => 'Password wajib diisi.',
         ]);
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
@@ -42,14 +47,18 @@ class AuthController extends Controller
         $data = $request->validate([
             'name'     => ['required', 'string', 'max:255'],
             'email'    => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8'],
+            'password' => ['required', Password::min(8)],
+        ], [
+            'name.required'     => 'Nama lengkap wajib diisi.',
+            'email.required'    => 'Email wajib diisi.',
+            'email.email'       => 'Format email tidak valid.',
+            'email.unique'      => 'Email sudah terdaftar.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min'      => 'Password minimal 8 karakter.',
         ]);
 
-        $user = User::create([
-            'name'     => $data['name'],
-            'email'    => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        // Model User (Laravel 11) sudah meng-hash password lewat cast 'hashed'.
+        $user = User::create($data);
 
         Auth::login($user);
         $request->session()->regenerate();

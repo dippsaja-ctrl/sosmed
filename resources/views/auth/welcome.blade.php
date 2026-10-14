@@ -1,10 +1,17 @@
 @extends('layouts.auth')
-@section('title', 'Welcome')
+@section('title', 'Selamat datang')
 
 @section('content')
-    <h1 class="title">WELCOME <span class="wave">👋</span></h1>
-    <p class="lead">Hi there!<br>the choice is yours, Login or create an account.</p>
+<section class="welcome">
+    <h1 class="title">WELCOME <span aria-hidden="true">👋</span></h1>
+    <p class="welcome__text">
+        Hi there!<br>
+        Silakan masuk atau buat akun baru untuk mulai belajar.
+    </p>
 
-    <a class="btn" href="{{ route('login') }}">LOG IN</a>
-    <a class="btn" href="{{ route('register') }}">CREATE ACCOUNT</a>
+    <div class="welcome__actions">
+        <a href="{{ route('login') }}" class="btn">LOG IN</a>
+        <a href="{{ route('register') }}" class="btn">CREATE ACCOUNT</a>
+    </div>
+</section>
 @endsection

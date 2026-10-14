@@ -6,7 +6,7 @@
     <title>@yield('title') · Peaks</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
 </head>
 <body>
@@ -14,7 +14,7 @@
     <span class="star star--b" aria-hidden="true"></span>
     <span class="star star--c" aria-hidden="true"></span>
 
-    <main class="panel">
+    <main class="screen">
         @yield('content')
     </main>
 </body>

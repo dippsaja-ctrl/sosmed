@@ -1,35 +1,54 @@
 @extends('layouts.auth')
-@section('title', 'Log in')
+@section('title', 'Masuk')
 
 @section('content')
-    <h1 class="title">Welcome Back</h1>
-    <p class="lead">Ready to continue your learning journey?<br>Your path is right here</p>
+<a href="{{ route('welcome') }}" class="back">&lsaquo; Back</a>
 
-    <form method="POST" action="{{ route('login') }}" class="form" novalidate>
+<section class="card">
+    <h1 class="title title--dark">Welcome Back</h1>
+    <p class="subtitle">
+        Lanjutkan perjalanan belajarmu.<br>
+        <em>Jalanmu sudah menunggu.</em>
+    </p>
+
+    <form method="POST" action="{{ route('login.store') }}" novalidate>
         @csrf
 
-        <label for="email">Email:</label>
-        <input id="email" type="email" name="email" value="{{ old('email') }}"
-               placeholder="name@gmail.com" autocomplete="email" required autofocus>
-        @error('email') <p class="error">{{ $message }}</p> @enderror
-
-        <label for="password">Password:</label>
-        <div class="password">
-            <input id="password" type="password" name="password" autocomplete="current-password" required>
-            <button type="button" class="eye" data-toggle="password" aria-label="Tampilkan password">👁</button>
+        <div class="field">
+            <label for="email">Email</label>
+            <input id="email" type="email" name="email" value="{{ old('email') }}"
+                   placeholder="nama@gmail.com" autocomplete="email" required autofocus
+                   @class(['is-invalid' => $errors->has('email')])>
+            @error('email') <p class="error">{{ $message }}</p> @enderror
         </div>
-        @error('password') <p class="error">{{ $message }}</p> @enderror
+
+        <div class="field">
+            <label for="password">Password</label>
+            <div class="password">
+                <input id="password" type="password" name="password"
+                       placeholder="••••••••" autocomplete="current-password" required
+                       @class(['is-invalid' => $errors->has('password')])>
+                <button type="button" class="password__toggle" data-toggle="password" aria-label="Tampilkan password">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+            </div>
+            @error('password') <p class="error">{{ $message }}</p> @enderror
+        </div>
 
         <div class="row">
-            <label class="check"><input type="checkbox" name="remember"> Remember me</label>
+            <label class="check">
+                <input type="checkbox" name="remember" value="1"> Remember me
+            </label>
             <a href="#" class="link">Forgot password?</a>
         </div>
 
-        <button type="submit" class="btn">LOG IN</button>
+        <button type="submit" class="btn btn--block">LOG IN</button>
     </form>
 
-    @include('auth._social')
+    @include('partials.social')
 
-    <p class="switch">Belum punya akun? <a href="{{ route('register') }}">Daftar</a></p>
-    <script src="{{ asset('js/auth.js') }}"></script>
+    <p class="switch">Belum punya akun? <a href="{{ route('register') }}" class="link">Create account</a></p>
+</section>
+
+@include('partials.toggle-script')
 @endsection

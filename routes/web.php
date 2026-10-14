@@ -1,27 +1,29 @@
 <?php
 
-<<<<<<< HEAD
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\TikTokController;
 use Illuminate\Support\Facades\Route;
-=======
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
 use Google\Client;
->>>>>>> 8e5165d21f43555af403a65e3d6606b3dabdc610
+8e5165d21f43555af403a65e3d6606b3dabdc610
 
 Route::get('/', fn () => view('auth.welcome'))->name('welcome');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])->name('login.store');
 
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/register', [AuthController::class, 'register'])->name('register.store');
+});
 
-<<<<<<< HEAD
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
     // Login sosial (opsional, butuh Laravel Socialite)
     Route::get('/auth/{provider}', [SocialController::class, 'redirect'])
         ->whereIn('provider', ['google', 'facebook', 'tiktok'])->name('social.redirect');
@@ -275,4 +277,4 @@ Route::get('/facebook/test-token', function () {
 */
 
 require __DIR__ . '/auth.php';
->>>>>>> 8e5165d21f43555af403a65e3d6606b3dabdc610
+8e5165d21f43555af403a65e3d6606b3dabdc610
