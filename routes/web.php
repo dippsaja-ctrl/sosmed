@@ -30,10 +30,31 @@ Route::middleware('auth')->group(function () {
         ->whereIn('provider', ['google', 'facebook', 'tiktok'])->name('social.callback');
 });
 
+
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/dashboard', fn () => view('dashboard'))
+        ->name('dashboard');
+
+    Route::get('/posting', function () {
+        return view('posting');
+    })->name('posting');
+
+    Route::get('/terjadwal', function () {
+        return view('terjadwal');
+    })->name('terjadwal');
+
+    Route::get('/akun', function () {
+        return view('akun');
+    })->name('akun');
+
+    Route::get('/riwayat', function () {
+        return view('riwayat');
+    })->name('riwayat');
+
+    Route::post('/logout', [AuthController::class, 'logout'])
+        ->name('logout');
 });
+
 
 Route::get('/auth/tiktok/redirect', [TikTokController::class, 'redirectToProvider']);
 
