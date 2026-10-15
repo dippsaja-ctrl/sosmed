@@ -42,7 +42,7 @@ return [
     ],
 
     'tiktok' => [
-        'client_id' => env('TIKTOK_CLIENT_ID'),
+        'client_id' => env('TIKTOK_CLIENT_KEY'),
         'client_secret' => env('TIKTOK_CLIENT_SECRET'),
         'redirect' => env('TIKTOK_REDIRECT_URI'),
     ],
@@ -52,7 +52,5 @@ return [
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
-
-    
 
 ];
