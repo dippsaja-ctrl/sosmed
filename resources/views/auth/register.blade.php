@@ -7,11 +7,11 @@
 <section class="card">
     <h1 class="title title--dark">Create your Account</h1>
     <p class="subtitle">
-        Kami siap membantumu mencapai puncak belajar.<br>
+        Posting video ke seluruh platfrom dengan sangat mudah.<br>
         <strong>Are you ready?</strong>
     </p>
 
-    <form method="POST" action="{{ route('register.store') }}" novalidate>
+    <form method="POST" action="{{ route('register') }}" novalidate>
         @csrf
 
         <div class="field">
@@ -41,6 +41,12 @@
                 </button>
             </div>
             @error('password') <p class="error">{{ $message }}</p> @enderror
+        </div>
+
+        <div class="field">
+            <label for="password_confirmation">Confirm password</label>
+            <input id="password_confirmation" type="password" name="password_confirmation"
+                   placeholder="Ulangi password" autocomplete="new-password" required>
         </div>
 
         <button type="submit" class="btn btn--block">GET STARTED</button>

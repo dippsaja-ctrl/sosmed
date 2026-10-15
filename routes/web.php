@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\TikTokController;
+use App\Http\Controllers\SocialAccountController;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Google\Client;
@@ -266,6 +267,11 @@ Route::get('/facebook/test-token', function () {
         'status' => 'Token Session Aktif & Valid!',
         'profile_data' => $response->json()
     ]);
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/connect/{platform}', [SocialAccountController::class, 'redirect']);
+    Route::get('/connect/{platform}/callback', [SocialAccountController::class, 'callback']);
 });
 
 /*
