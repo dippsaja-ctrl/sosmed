@@ -11,7 +11,7 @@
         <em>Jalanmu sudah menunggu.</em>
     </p>
 
-    <form method="POST" action="{{ route('login.store') }}" novalidate>
+    <form method="POST" action="{{ route('login') }}" novalidate>
         @csrf
 
         <div class="field">
