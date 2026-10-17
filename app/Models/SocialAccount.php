@@ -8,25 +8,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class SocialAccount extends Model
 {
     protected $fillable = [
-        'user_id',
-        'platform',
-        'access_token',
-        'refresh_token',
-        'expires_at',
+        'user_id', 'platform', 'handle', 'external_id',
+        'access_token', 'refresh_token', 'expires_at', 'connected_at',
     ];
 
-    // Token tidak ikut muncul saat model di-serialize ke JSON/array
-    protected $hidden = [
-        'access_token',
-        'refresh_token',
-    ];
+    protected $hidden = ['access_token', 'refresh_token'];
 
     protected function casts(): array
     {
         return [
-            'access_token'  => 'encrypted',
+            'access_token'  => 'encrypted',   // otomatis terenkripsi di database
             'refresh_token' => 'encrypted',
             'expires_at'    => 'datetime',
+            'connected_at'  => 'datetime',
         ];
     }
 
@@ -38,5 +32,15 @@ class SocialAccount extends Model
     public function isExpired(): bool
     {
         return $this->expires_at !== null && $this->expires_at->isPast();
+    }
+
+    /** Token dianggap "hampir habis" kalau sisa umurnya < 20% dari masa berlaku platform. */
+    public function expiresSoon(): bool
+    {
+        $life = config("posting.platforms.{$this->platform}.token_life");
+        if ($this->expires_at === null || ! $life) {
+            return false;
+        }
+        return $this->expires_at->lt(now()->addSeconds((int) ($life * 0.2)));
     }
 }

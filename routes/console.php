@@ -1,12 +1,15 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+/*
+ * Scheduler Laravel. Di server, cukup 1 entri cron:
+ *   * * * * * cd /path/ke/project && php artisan schedule:run >> /dev/null 2>&1
+ * Saat development, jalankan: php artisan schedule:work
+ */
 
-// Menjadwalkan pembersihan otomatis job yang gagal setiap hari
-Schedule::command('queue:prune-failed --hours=24')->daily();
+// Cek posting terjadwal yang waktunya sudah tiba, lalu masukkan ke queue.
+Schedule::command('posts:dispatch-due')->everyMinute()->withoutOverlapping();
+
+// Perbarui token yang hampir kedaluwarsa (refresh token otomatis).
+Schedule::command('tokens:refresh')->everyTenMinutes()->withoutOverlapping();
