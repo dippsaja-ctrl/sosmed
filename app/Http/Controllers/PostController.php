@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Jobs\PublishToPlatform;
 use App\Models\Post;
 use App\Models\SocialAccount;
+<<<<<<< HEAD
 use App\Models\ScheduledPost;
+=======
+>>>>>>> bebel
 use App\Support\PostValidator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -136,7 +139,11 @@ class PostController extends Controller
 
         $post->update(['state' => 'processing']);
         foreach ($post->targets as $target) {
+<<<<<<< HEAD
             PublishToPlatform::dispatch($target, 1)->onQueue('uploads');
+=======
+            PublishToPlatform::dispatch($target, 1);
+>>>>>>> bebel
         }
         return redirect()->route('history.index')->with('ok', 'Posting dikirim ke antrean. Status diperbarui otomatis di Riwayat.');
     }
@@ -217,6 +224,7 @@ class PostController extends Controller
         $dirs = collect($post->media)->map(fn ($m) => dirname($m['path']))->unique();
         foreach ($dirs as $d) Storage::disk('public')->deleteDirectory($d);
     }
+<<<<<<< HEAD
 
     // confirm(), cabang schedule:
     $post->update(['state' => 'scheduled']);
@@ -234,4 +242,6 @@ class PostController extends Controller
     ScheduledPost::where('post_id', $post->id)
         ->where('status', 'pending')
         ->update(['status' => 'canceled']);
+=======
+>>>>>>> bebel
 }
