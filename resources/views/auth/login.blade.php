@@ -1,436 +1,285 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Login - Pos Bersama</title>
+    <title>Login - Posting Sosmed</title>
 
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        html {
-            min-height: 100%;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         body {
             min-height: 100vh;
-            min-height: 100dvh;
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 16px;
-            font-family: Arial, Helvetica, sans-serif;
-            background: linear-gradient(
-                135deg,
-                #050b16 0%,
-                #09172b 48%,
-                #102d55 100%
-            );
+            align-items: center;
+            padding: 25px 15px;
+            position: relative;
             overflow-x: hidden;
+            background: linear-gradient(120deg, #061020, #10294b);
         }
 
-        /* Dekorasi background */
         body::before,
         body::after {
             content: "";
             position: fixed;
+            width: 280px;
+            height: 280px;
             border-radius: 50%;
+            background: rgba(55, 91, 145, 0.18);
             pointer-events: none;
-            z-index: 0;
         }
 
         body::before {
-            width: 280px;
-            height: 280px;
             top: -120px;
             left: -100px;
-            background: rgba(86, 135, 200, 0.12);
         }
 
         body::after {
-            width: 320px;
-            height: 320px;
-            bottom: -170px;
-            right: -100px;
-            background: rgba(86, 135, 200, 0.10);
+            bottom: -130px;
+            right: -60px;
+            width: 280px;
+            height: 280px;
         }
 
-        /* Kartu login */
         .login-card {
             position: relative;
             z-index: 1;
             width: 100%;
-            max-width: 420px;
-            padding: 25px 32px 24px;
+            max-width: 400px;
+            padding: 18px 29px 20px;
             background: #f8faff;
-            border: 1px solid rgba(255, 255, 255, 0.75);
             border-radius: 20px;
-            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.30);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.12);
         }
 
-        /* Logo */
-        .login-logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 12px;
-        }
-
-        .login-logo img {
-            display: block;
-            width: 90px;
-            height: 90px;
-            object-fit: contain;
-        }
-
-        /* Judul */
         .login-header {
             text-align: center;
-            margin-bottom: 21px;
+            margin-bottom: 15px;
         }
 
         .login-header h1 {
-            color: #20233c;
-            font-size: 29px;
-            line-height: 1.25;
+            color: #24283f;
+            font-size: 25px;
             font-weight: 700;
-            margin-bottom: 9px;
+            margin-bottom: 8px;
         }
 
         .login-header p {
-            color: #8991a0;
-            font-size: 13px;
-            line-height: 1.7;
+            color: #8290aa;
+            font-size: 11px;
+            line-height: 1.5;
         }
 
-        /* Form */
         .form-group {
-            margin-bottom: 13px;
+            margin-bottom: 9px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 6px;
-            color: #525b6b;
+            color: #34415d;
             font-size: 13px;
             font-weight: 600;
+            margin-bottom: 6px;
         }
 
-        .input-box {
-            position: relative;
-        }
-
-        .input-box input {
-            display: block;
+        .form-group input {
             width: 100%;
-            height: 43px;
-            padding: 0 14px;
-            border: 1px solid #e1e5ed;
+            height: 38px;
+            padding: 0 13px;
+            border: 1px solid #dce3ef;
             border-radius: 8px;
             outline: none;
-            background: #ffffff;
-            color: #263247;
-            font-family: inherit;
-            font-size: 13px;
+            background: #fff;
+            color: #29334b;
+            font-size: 12px;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        .input-box input::placeholder {
-            color: #b0b6c1;
+        .form-group input:focus {
+            border-color: #5486cf;
+            box-shadow: 0 0 0 3px rgba(84, 134, 207, 0.12);
         }
 
-        .input-box input:focus {
-            border-color: #4f79bd;
-            box-shadow: 0 0 0 3px rgba(79, 121, 189, 0.10);
+        .form-group input::placeholder {
+            color: #a0aec4;
         }
 
-        .password-input {
-            padding-right: 48px !important;
-        }
-
-        .toggle-password {
-            position: absolute;
-            top: 50%;
-            right: 12px;
-            transform: translateY(-50%);
-            border: none;
-            background: transparent;
-            color: #65738a;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .error-message {
-            margin-top: 5px;
-            color: #dc3545;
-            font-size: 11px;
-        }
-
-        /* Remember me dan Forgot password */
-        .login-options {
+        .form-options {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            margin: 3px 0 17px;
+            gap: 8px;
+            margin: 10px 0 13px;
             font-size: 11px;
         }
 
-        .remember-me {
+        .remember {
             display: flex;
             align-items: center;
             gap: 6px;
-            color: #8b93a1;
-            cursor: pointer;
+            color: #71809a;
         }
 
-        .remember-me input {
-            width: 13px;
-            height: 13px;
-            accent-color: #416bb0;
-            cursor: pointer;
+        .remember input {
+            accent-color: #4775bd;
         }
 
-        .forgot-password {
-            color: #7c8798;
+        .form-options a,
+        .register-text a {
+            color: #3265b7;
             text-decoration: none;
         }
 
-        .forgot-password:hover {
-            color: #416bb0;
+        .form-options a:hover,
+        .register-text a:hover {
+            text-decoration: underline;
         }
 
-        /* Tombol login */
         .login-button {
-            display: block;
             width: 100%;
-            height: 45px;
+            height: 39px;
             border: none;
             border-radius: 9px;
-            background: linear-gradient(135deg, #588bd2, #416bb0);
-            color: #ffffff;
-            font-size: 13px;
-            font-weight: 700;
+            background: linear-gradient(100deg, #588bd5, #416bb3);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
             cursor: pointer;
-            transition: 0.2s;
+            transition: opacity 0.2s, transform 0.2s;
         }
 
         .login-button:hover {
-            background: linear-gradient(135deg, #477bc3, #315a9c);
+            opacity: 0.92;
             transform: translateY(-1px);
-            box-shadow: 0 5px 12px rgba(65, 107, 176, 0.18);
         }
 
-        /* Pemisah */
+        .login-button:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            padding: 9px 11px;
+            margin-bottom: 12px;
+            border: 1px solid #f1c6c6;
+            border-radius: 7px;
+            background: #fff0f0;
+            color: #b42318;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .success-message {
+            padding: 9px 11px;
+            margin-bottom: 12px;
+            border: 1px solid #b8e2c5;
+            border-radius: 7px;
+            background: #effbf2;
+            color: #21713b;
+            font-size: 12px;
+        }
+
         .divider {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin: 15px 0 9px;
-            color: #a0a7b3;
+            margin: 12px 0 14px;
+            color: #8491a8;
             font-size: 12px;
         }
 
         .divider::before,
         .divider::after {
             content: "";
-            flex: 1;
             height: 1px;
-            background: #e4e7ed;
+            flex: 1;
+            background: #dfe5ef;
         }
 
-        /* Ikon sosial diperbesar */
-        .social-links {
+        .social-login {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 35px;
-            margin-top: 12px;
-            margin-bottom: 14px;
+            gap: 48px;
+            margin-bottom: 16px;
         }
 
-        .social-links a {
+        .social-login a {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 42px;
-            height: 42px;
-            color: #727b8b;
-            font-size: 28px;
-            font-weight: 700;
+            width: 22px;
+            height: 24px;
+            color: #70819d;
             text-decoration: none;
+            font-size: 23px;
+            font-weight: bold;
             transition: color 0.2s, transform 0.2s;
         }
 
-        .social-links a:hover {
-            color: #416bb0;
-            transform: scale(1.15);
+        .social-login a:hover {
+            color: #416fba;
+            transform: translateY(-2px);
         }
 
-        /* Link register */
-        .register-link {
+        .social-login .music-icon {
+            font-size: 21px;
+        }
+
+        .register-text {
             text-align: center;
-            color: #8b93a1;
-            font-size: 13px;
+            color: #7d8aa1;
+            font-size: 12px;
+            margin-bottom: 0;
         }
 
-        .register-link a {
-            color: #416bb0;
-            font-weight: 700;
+        .register-text a {
+            font-weight: 600;
+        }
+
+        .legal-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px solid #e1e7f1;
+            color: #9aa5b8;
+            font-size: 10px;
+        }
+
+        .legal-links a {
+            color: #5278b8;
             text-decoration: none;
         }
 
-        .register-link a:hover {
+        .legal-links a:hover {
+            color: #244f98;
             text-decoration: underline;
         }
 
-        /* Laptop dengan layar pendek */
-        @media (max-height: 850px) {
+        @media (max-width: 480px) {
             .login-card {
                 max-width: 400px;
-                padding: 15px 28px;
-            }
-
-            .login-logo {
-                margin-bottom: 6px;
-            }
-
-            .login-logo img {
-                width: 65px;
-                height: 65px;
-            }
-
-            .login-header {
-                margin-bottom: 12px;
+                padding: 24px 22px;
+                border-radius: 17px;
             }
 
             .login-header h1 {
-                font-size: 25px;
-                margin-bottom: 6px;
+                font-size: 23px;
             }
 
-            .login-header p {
-                font-size: 11px;
-                line-height: 1.5;
-            }
-
-            .form-group {
-                margin-bottom: 9px;
-            }
-
-            .form-group label {
-                margin-bottom: 4px;
-            }
-
-            .input-box input {
-                height: 37px;
-            }
-
-            .login-options {
-                margin-bottom: 12px;
-            }
-
-            .login-button {
-                height: 39px;
-            }
-
-            .divider {
-                margin: 9px 0 6px;
-            }
-
-            .social-links {
-                margin-top: 8px;
-                margin-bottom: 8px;
-                gap: 30px;
-            }
-
-            .social-links a {
-                width: 38px;
-                height: 38px;
-                font-size: 26px;
-            }
-        }
-
-        /* HP */
-        @media (max-width: 420px) {
-            body {
-                padding: 12px;
-            }
-
-            .login-card {
-                max-width: 390px;
-                padding: 22px 21px;
-            }
-
-            .login-header h1 {
-                font-size: 25px;
-            }
-
-            .social-links {
-                gap: 28px;
-            }
-
-            .social-links a {
-                width: 36px;
-                height: 36px;
-                font-size: 25px;
-            }
-        }
-
-        /* HP dengan layar pendek */
-        @media (max-width: 420px) and (max-height: 700px) {
-            .login-card {
-                padding: 12px 19px;
-            }
-
-            .login-logo img {
-                width: 48px;
-                height: 48px;
-            }
-
-            .login-header {
-                margin-bottom: 9px;
-            }
-
-            .login-header h1 {
-                font-size: 22px;
-            }
-
-            .form-group {
-                margin-bottom: 7px;
-            }
-
-            .input-box input {
-                height: 34px;
-            }
-
-            .login-options {
-                margin-bottom: 10px;
-            }
-
-            .login-button {
-                height: 36px;
-            }
-
-            .divider {
-                margin: 7px 0 5px;
-            }
-
-            .social-links {
-                margin-top: 6px;
-                margin-bottom: 7px;
-                gap: 25px;
-            }
-
-            .social-links a {
-                width: 34px;
-                height: 34px;
-                font-size: 24px;
+            .social-login {
+                gap: 40px;
             }
         }
     </style>
@@ -438,96 +287,67 @@
 
 <body>
 
-    <main class="login-card">
-
-        <!-- Logo otomatis disembunyikan jika file tidak ditemukan -->
-        <div class="login-logo">
-            <img
-                src="{{ asset('images/logo.png') }}"
-                alt=""
-                onerror="this.style.display='none'; this.parentElement.style.display='none';"
-            >
-        </div>
+    <div class="login-card">
 
         <div class="login-header">
             <h1>Welcome Back</h1>
-
             <p>
-                Lanjutkan perjalananmu.
-                <br>
+                Lanjutkan perjalananmu.<br>
                 Jalanmu sudah menunggu.
             </p>
         </div>
 
-        <form method="POST" action="{{ url('/login') }}">
+        @if (session('status'))
+            <div class="success-message">
+                {{ session('status') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="error-message">
+                @foreach ($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('login') }}">
             @csrf
 
-            <!-- Email -->
             <div class="form-group">
                 <label for="email">Email</label>
-
-                <div class="input-box">
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value="{{ old('email') }}"
-                        placeholder="nama@gmail.com"
-                        autocomplete="email"
-                        required
-                        autofocus
-                    >
-                </div>
-
-                @error('email')
-                    <div class="error-message">{{ $message }}</div>
-                @enderror
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="{{ old('email') }}"
+                    placeholder="nama@gmail.com"
+                    autocomplete="email"
+                    required
+                    autofocus
+                >
             </div>
 
-            <!-- Password -->
             <div class="form-group">
                 <label for="password">Password</label>
-
-                <div class="input-box">
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        class="password-input"
-                        placeholder="Masukkan password"
-                        autocomplete="current-password"
-                        required
-                    >
-
-                    <button
-                        type="button"
-                        class="toggle-password"
-                        onclick="togglePassword('password', this)"
-                        aria-label="Tampilkan atau sembunyikan password"
-                    >◉</button>
-                </div>
-
-                @error('password')
-                    <div class="error-message">{{ $message }}</div>
-                @enderror
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Masukkan password"
+                    autocomplete="current-password"
+                    required
+                >
             </div>
 
-            <!-- Remember me dan Forgot password -->
-            <div class="login-options">
-                <label class="remember-me">
+            <div class="form-options">
+                <label class="remember">
                     <input type="checkbox" name="remember" value="1">
                     <span>Remember me</span>
                 </label>
 
                 @if (Route::has('password.request'))
-                    <a
-                        href="{{ route('password.request') }}"
-                        class="forgot-password"
-                    >
-                        Forgot password?
-                    </a>
-                @else
-                    <a href="#" class="forgot-password">
+                    <a href="{{ route('password.request') }}">
                         Forgot password?
                     </a>
                 @endif
@@ -542,33 +362,26 @@
             <span>Login with</span>
         </div>
 
-        <!-- Ikon sosial berukuran besar -->
-        <div class="social-links">
-            <a href="{{ route('login') }}" aria-label="Facebook">f</a>
-            <a href="{{ route('login') }}" aria-label="Google">G</a>
-            <a href="{{ route('login') }}" aria-label="TikTok">♪</a>
+        <div class="social-login">
+            <a href="{{ url('/auth/facebook') }}" aria-label="Login dengan Facebook">f</a>
+            <a href="{{ url('/auth/google') }}" aria-label="Login dengan Google">G</a>
+            <a href="{{ url('/auth/tiktok') }}" class="music-icon" aria-label="Login dengan TikTok">【ᕷ】</a>
         </div>
 
-        <div class="register-link">
+        <p class="register-text">
             Belum punya akun?
-            <a href="{{ route('register') }}">Create account</a>
+            <a href="{{ Route::has('register') ? route('register') : url('/register') }}">
+                Create account
+            </a>
+        </p>
+
+        <div class="legal-links">
+            <a href="{{ url('/privacy-policy') }}">Kebijakan Privasi</a>
+            <span>•</span>
+            <a href="{{ url('/terms-of-service') }}">Ketentuan Layanan</a>
         </div>
 
-    </main>
-
-    <script>
-        function togglePassword(inputId, button) {
-            const input = document.getElementById(inputId);
-
-            if (input.type === 'password') {
-                input.type = 'text';
-                button.textContent = '◎';
-            } else {
-                input.type = 'password';
-                button.textContent = '◉';
-            }
-        }
-    </script>
+    </div>
 
 </body>
-</html> 
+</html>

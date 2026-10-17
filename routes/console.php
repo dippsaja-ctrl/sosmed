@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Support\Facades\Schedule;
@@ -9,14 +10,16 @@ use Illuminate\Support\Facades\Schedule;
  */
 
 // Cek posting terjadwal yang waktunya sudah tiba, lalu masukkan ke queue.
-Schedule::command('posts:dispatch-due')->everyMinute()->withoutOverlapping();
+Schedule::command('posts:dispatch-due')
+    ->everyMinute()
+    ->withoutOverlapping();
 
-// Perbarui token yang hampir kedaluwarsa (refresh token otomatis).
-Schedule::command('tokens:refresh')->everyTenMinutes()->withoutOverlapping();
-<<<<<<< HEAD
+// Perbarui token yang hampir kedaluwarsa.
+Schedule::command('tokens:refresh')
+    ->everyTenMinutes()
+    ->withoutOverlapping();
 
+// Perbarui token akun media sosial.
 Schedule::command('social:refresh-tokens')
     ->everyFifteenMinutes()
     ->withoutOverlapping();
-=======
->>>>>>> bebel

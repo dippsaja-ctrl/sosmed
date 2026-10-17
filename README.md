@@ -1,6 +1,6 @@
-# Pos Bersama: kode Laravel (sistem + tampilan)
+# Posting Sosmed: kode Laravel (sistem + tampilan)
 
-Kode ini adalah versi Laravel dari prototype Pos Bersama. Isinya adalah **file yang ditimpa ke project Laravel baru**
+Kode ini adalah versi Laravel dari prototype Posting Sosmed. Isinya adalah **file yang ditimpa ke project Laravel baru**
 (bukan project lengkap), supaya Anda tetap menjalankan `composer create-project` sendiri
 sesuai Tahap 0 di modul.
 
