@@ -28,12 +28,10 @@ class PostTarget extends Model
     {
         return self::LABELS[$this->status] ?? [$this->status, 'muted'];
     }
-<<<<<<< HEAD
 
     public function histories() 
     { 
         return $this->hasMany(PostHistory::class, 'post_target_id'); 
     }
-=======
->>>>>>> bebel
+
 }

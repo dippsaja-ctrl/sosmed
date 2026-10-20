@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\PublishToPlatform;
 use App\Models\Post;
-<<<<<<< HEAD
 use App\Models\SocialAccount;
-=======
->>>>>>> bebel
 use Illuminate\Http\Request;
 
 class HistoryController extends Controller
@@ -15,13 +12,11 @@ class HistoryController extends Controller
     public function index(Request $request)
     {
         $filter = $request->query('f', 'all');
-<<<<<<< HEAD
+
         $q = Post::with(['targets.histories' => fn ($h) => $h->latest()])
             ->where('user_id', auth()->id())
             ->whereIn('state', ['processing', 'done']);
-=======
         $q = Post::with('targets')->where('user_id', auth()->id())->whereIn('state', ['processing', 'done']);
->>>>>>> bebel
 
         if ($filter === 'bad') {
             $q->whereHas('targets', fn ($t) => $t->where('status', 'failed'));
@@ -36,7 +31,6 @@ class HistoryController extends Controller
     public function retry(Post $post, string $platform)
     {
         abort_unless($post->user_id === auth()->id(), 403);
-<<<<<<< HEAD
 
         if ($problem = $this->accountProblem($platform)) {
             return back()->withErrors(['retry' => $problem]);
@@ -56,13 +50,13 @@ class HistoryController extends Controller
 
         $post->update(['state' => 'processing']);
         PublishToPlatform::dispatch($target, 1)->onQueue('uploads');
-=======
+
         $target = $post->targets()->where('platform', $platform)->where('status', 'failed')->firstOrFail();
 
         $target->update(['status' => 'queued', 'error' => null, 'attempts' => 0]);
         $post->update(['state' => 'processing']);
         PublishToPlatform::dispatch($target, 1);
->>>>>>> bebel
+
 
         return back()->with('ok', 'Mencoba lagi ke '.config("posting.platforms.$platform.label").'.');
     }
@@ -70,7 +64,6 @@ class HistoryController extends Controller
     public function retryAll(Post $post)
     {
         abort_unless($post->user_id === auth()->id(), 403);
-<<<<<<< HEAD
 
         $platforms = $post->targets()->where('status', 'failed')->pluck('platform');
         abort_if($platforms->isEmpty(), 404);
@@ -131,7 +124,6 @@ class HistoryController extends Controller
         return null;
     }
 }
-=======
         $failed = $post->targets()->where('status', 'failed')->get();
         abort_if($failed->isEmpty(), 404);
 
@@ -143,4 +135,3 @@ class HistoryController extends Controller
         return back()->with('ok', 'Mencoba lagi semua platform yang gagal.');
     }
 }
->>>>>>> bebel

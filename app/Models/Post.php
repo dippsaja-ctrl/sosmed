@@ -47,7 +47,6 @@ class Post extends Model
         return $this->caption ?: ($this->yt_meta['title'] ?? '(tanpa caption)');
     }
 
-<<<<<<< HEAD
     public function media()      
     { 
         return $this->hasMany(PostMedia::class)->orderBy('position'); 
@@ -63,8 +62,6 @@ class Post extends Model
         return $this->hasMany(PostHistory::class); 
     }
 
-=======
->>>>>>> bebel
     /** @return array{0:string,1:string} [label, kelas css] */
     public function overall(): array
     {

@@ -44,7 +44,6 @@ class SocialAccount extends Model
         }
         return $this->expires_at->lt(now()->addSeconds((int) ($life * 0.2)));
     }
-<<<<<<< HEAD
 
     public function scopeExpiring(Builder $query, int $minutes = 10): Builder
     {
@@ -53,6 +52,5 @@ class SocialAccount extends Model
             ->where('needs_reauth', false)
             ->where('token_expires_at', '<=', now()->addMinutes($minutes));
     }
-=======
->>>>>>> bebel
+
 }

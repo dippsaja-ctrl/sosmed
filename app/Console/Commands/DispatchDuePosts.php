@@ -15,11 +15,11 @@ class DispatchDuePosts extends Command
     {
         $count = 0;
         Post::with('targets')->where('state', 'scheduled')->where('scheduled_at', '<=', now())
-<<<<<<< HEAD
+
             ->eachById(function (Post $post) use (&$count) {
-=======
+
             ->each(function (Post $post) use (&$count) {
->>>>>>> bebel
+
                 // update atomik supaya tidak terkirim dua kali bila scheduler tumpang tindih
                 $claimed = Post::whereKey($post->id)->where('state', 'scheduled')->update(['state' => 'processing']);
                 if (! $claimed) return;

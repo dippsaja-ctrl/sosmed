@@ -8,14 +8,14 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SocialAccountController;
+use App\Http\Controllers\OtpController;
+use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\Facades\Route;
 
-<<<<<<< HEAD
 Route::redirect('/', '/dashboard');
-=======
+
 Route::get('/', function () {
     return redirect()->route('login');})->name('welcome');
->>>>>>> bebel
 
 // Halaman publik (banyak platform mewajibkan link ini saat mendaftar developer app)
 Route::get('/kebijakan-privasi', [LegalController::class, 'show'])->defaults('page', 'privacy')->name('legal.privacy');
@@ -23,7 +23,6 @@ Route::get('/syarat-layanan', [LegalController::class, 'show'])->defaults('page'
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-<<<<<<< HEAD
 
     // Akun sosmed + OAuth
     Route::get('/akun-sosmed', [SocialAccountController::class, 'index'])->name('accounts.index');
@@ -31,7 +30,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/akun-sosmed/{platform}', [SocialAccountController::class, 'destroy'])->name('accounts.destroy');
     Route::get('/auth/{platform}/redirect', [OAuthController::class, 'redirect'])->name('oauth.redirect');
     Route::get('/auth/{platform}/callback', [OAuthController::class, 'callback'])->name('oauth.callback');
-=======
 
     // Akun sosmed + OAuth
     Route::get('/akun-sosmed', [SocialAccountController::class, 'index'])->name('accounts.index');
@@ -49,7 +47,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/posting/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
     Route::put('/posting/{post}', [PostController::class, 'update'])->name('posts.update');
     Route::post('/posting/{post}/batal', [PostController::class, 'cancel'])->name('posts.cancel');
->>>>>>> bebel
 
     // Jadwal & riwayat
     Route::get('/terjadwal', [ScheduleController::class, 'index'])->name('schedule.index');
@@ -63,7 +60,6 @@ Route::middleware('auth')->group(function () {
         return back();
     })->name('notifications.read');
 
-<<<<<<< HEAD
     Route::get('/terjadwal', function () {
         return view('terjadwal');
     })->name('terjadwal');
@@ -104,15 +100,11 @@ Route::get('/auth/tiktok/redirect', [TikTokController::class, 'redirectToProvide
         return back();
     })->name('notifications.read');
 
-=======
->>>>>>> bebel
     // Profil bawaan Laravel Breeze (dibutuhkan oleh layout/navigasi Breeze)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
-<<<<<<< HEAD
 Route::middleware('auth')->group(function () {
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
     Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
@@ -128,11 +120,18 @@ Route::prefix('auth')->group(function () {
         ->name('social.callback');
 });
 
+Route::post('/otp/send', [OtpController::class, 'send'])
+    ->middleware('throttle:6,1');
+Route::post('/otp/verify-register', [OtpController::class, 'verifyRegister'])
+    ->middleware('throttle:10,1');
+Route::post('/otp/reset-password', [OtpController::class, 'resetPassword'])
+    ->middleware('throttle:10,1');
+
 Route::post('/history/{target}/retry', [HistoryController::class, 'retry'])->name('history.retry');
 
 Route::post('/history/{post}/retry/{platform}', [HistoryController::class, 'retry'])->name('history.retry');
 Route::post('/history/{post}/retry-all', [HistoryController::class, 'retryAll'])->name('history.retryAll');
 
-=======
->>>>>>> bebel
+Schedule::command('sosmed:clean-temp --hours=24')->hourly();
+
 require __DIR__.'/auth.php';

@@ -5,10 +5,7 @@ namespace App\Jobs;
 use App\Exceptions\PublishException;
 use App\Models\Post;
 use App\Models\PostTarget;
-<<<<<<< HEAD
 use App\Models\PostHistory;
-=======
->>>>>>> bebel
 use App\Models\SocialAccount;
 use App\Notifications\AppNotice;
 use App\Services\Platforms\PlatformManager;
@@ -78,7 +75,6 @@ class PublishToPlatform implements ShouldQueue
                 'published_at' => now(),
                 'error'        => null,
             ]);
-<<<<<<< HEAD
 
             // Catat ke riwayat. Kegagalan mencatat log tidak boleh membuat posting dianggap gagal.
             try {
@@ -87,8 +83,6 @@ class PublishToPlatform implements ShouldQueue
                 report($logError);
             }
 
-=======
->>>>>>> bebel
             self::finalize($target->post);
         } catch (Throwable $e) {
             $target->update(['error' => mb_substr($e->getMessage(), 0, 1000)]);
@@ -111,7 +105,6 @@ class PublishToPlatform implements ShouldQueue
         if (! $target) return;
 
         $target->update(['status' => 'failed', 'error' => mb_substr($e->getMessage(), 0, 1000)]);
-<<<<<<< HEAD
 
         try {
             PostHistory::logFailure($target, $e->getMessage());
@@ -119,8 +112,6 @@ class PublishToPlatform implements ShouldQueue
             report($logError);
         }
 
-=======
->>>>>>> bebel
         self::finalize($target->post);
     }
 
@@ -144,8 +135,4 @@ class PublishToPlatform implements ShouldQueue
             $bad->isEmpty() ? "Posting $name terbit di semua platform." : "Posting $name gagal di ".$bad->implode(', ').'. Buka Riwayat untuk mencoba lagi.'
         ));
     }
-<<<<<<< HEAD
-}
-=======
-}
->>>>>>> bebel
+

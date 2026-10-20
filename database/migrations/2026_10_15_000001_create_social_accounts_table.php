@@ -4,17 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-<<<<<<< HEAD:database/migrations/2026_10_15_000001_create_social_accounts_table.php
-return new class extends Migration {
-=======
 return new class extends Migration
 {
->>>>>>> bebel:database/migrations/2026_09_28_101743_create_social_accounts_table.php
     public function up(): void
     {
         Schema::create('social_accounts', function (Blueprint $table) {
             $table->id();
-<<<<<<< HEAD:database/migrations/2026_10_15_000001_create_social_accounts_table.php
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('platform');               // instagram|facebook|tiktok|youtube
             $table->string('handle')->nullable();     // @username / nama Page / nama channel
@@ -24,7 +19,6 @@ return new class extends Migration
             $table->timestamp('expires_at')->nullable();
             $table->timestamp('connected_at')->nullable();
             $table->timestamps();
-=======
 
             $table->foreignId('user_id')
                 ->constrained()
@@ -40,7 +34,6 @@ return new class extends Migration
 
             $table->timestamps();
 
->>>>>>> bebel:database/migrations/2026_09_28_101743_create_social_accounts_table.php
             $table->unique(['user_id', 'platform']);
         });
     }

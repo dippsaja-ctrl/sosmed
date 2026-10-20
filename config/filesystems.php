@@ -60,6 +60,21 @@ return [
             'report' => false,
         ],
 
+        'sosmed_temp' => [
+            'driver'     => 'local',
+            'root'       => storage_path('app/public/sosmed-temp'),
+            'url'        => env('APP_URL').'/storage/sosmed-temp',
+            'visibility' => 'public',
+            'throw'      => true,
+        ],
+
+        // Opsi B: privat (upload langsung via stream ke API)
+        'sosmed_temp_private' => [
+            'driver' => 'local',
+            'root'   => storage_path('app/private/sosmed-temp'),
+            'throw'  => true,
+        ],
+
     ],
 
     /*
