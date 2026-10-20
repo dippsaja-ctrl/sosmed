@@ -9,16 +9,25 @@ use Illuminate\Database\Eloquent\Builder;
 class SocialAccount extends Model
 {
     protected $fillable = [
-        'user_id', 'platform', 'handle', 'external_id',
-        'access_token', 'refresh_token', 'expires_at', 'connected_at',
+        'user_id',
+        'platform',
+        'handle',
+        'external_id',
+        'access_token',
+        'refresh_token',
+        'expires_at',
+        'connected_at',
     ];
 
-    protected $hidden = ['access_token', 'refresh_token'];
+    protected $hidden = [
+        'access_token',
+        'refresh_token',
+    ];
 
     protected function casts(): array
     {
         return [
-            'access_token'  => 'encrypted',   // otomatis terenkripsi di database
+            'access_token'  => 'encrypted',
             'refresh_token' => 'encrypted',
             'expires_at'    => 'datetime',
             'connected_at'  => 'datetime',
@@ -32,25 +41,48 @@ class SocialAccount extends Model
 
     public function isExpired(): bool
     {
-        return $this->expires_at !== null && $this->expires_at->isPast();
+        return $this->expires_at !== null
+            && $this->expires_at->isPast();
     }
 
-    /** Token dianggap "hampir habis" kalau sisa umurnya < 20% dari masa berlaku platform. */
+    /**
+     * Memeriksa apakah token akan segera kedaluwarsa.
+     */
     public function expiresSoon(): bool
     {
-        $life = config("posting.platforms.{$this->platform}.token_life");
+        $life = config(
+            "posting.platforms.{$this->platform}.token_life"
+        );
+
         if ($this->expires_at === null || ! $life) {
             return false;
         }
+<<<<<<< HEAD
         return $this->expires_at->lt(now()->addSeconds((int) ($life * 0.2)));
     }
+=======
+>>>>>>> 645607949a780e1c0ec292546c23efdc46250fff
 
-    public function scopeExpiring(Builder $query, int $minutes = 10): Builder
-    {
-        return $query->whereNotNull('refresh_token')
-            ->whereNotNull('token_expires_at')
-            ->where('needs_reauth', false)
-            ->where('token_expires_at', '<=', now()->addMinutes($minutes));
+        return $this->expires_at->lt(
+            now()->addSeconds((int) ($life * 0.2))
+        );
     }
 
+    /**
+     * Mengambil akun yang tokennya akan kedaluwarsa
+     * dalam jumlah menit tertentu.
+     */
+    public function scopeExpiring(
+        Builder $query,
+        int $minutes = 10
+    ): Builder {
+        return $query
+            ->whereNotNull('refresh_token')
+            ->whereNotNull('expires_at')
+            ->where('expires_at', '<=', now()->addMinutes($minutes));
+    }
+<<<<<<< HEAD
+
+=======
+>>>>>>> 645607949a780e1c0ec292546c23efdc46250fff
 }

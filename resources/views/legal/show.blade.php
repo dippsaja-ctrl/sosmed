@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ $page === 'privacy' ? 'Kebijakan Privasi' : 'Syarat Layanan' }} - Pos Bersama</title>
+<title>{{ $page === 'privacy' ? 'Kebijakan Privasi' : 'Syarat Layanan' }} - Posting Sosmed</title>
 <link rel="stylesheet" href="{{ asset('css/posbersama.css') }}"></head>
 <body><div class="legal card">
 @if($page === 'privacy')
     <h2>Kebijakan Privasi</h2>
-    <p>Aplikasi Pos Bersama dipakai internal kantor untuk memposting konten ke akun sosial media milik kantor.</p>
+    <p>Aplikasi Posting Sosmed dipakai internal kantor untuk memposting konten ke akun sosial media milik kantor.</p>
     <p>Kami menyimpan token akses (terenkripsi) hanya untuk memposting atas nama akun yang Anda hubungkan. Kami tidak membaca pesan pribadi dan tidak membagikan data ke pihak lain. Anda dapat memutus koneksi kapan saja di menu Akun Sosmed.</p>
 @else
     <h2>Syarat Layanan</h2>
