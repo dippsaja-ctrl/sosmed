@@ -1,55 +1,90 @@
-<section class="space-y-6">
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Delete Account') }}
-        </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.') }}
-        </p>
-    </header>
+<section class="delete-profile-form">
+    <p class="delete-description">
+        Jika akun dihapus, kamu bisa kehilangan akses ke akun dan data
+        yang terkait. Pastikan kamu benar-benar ingin melanjutkan.
+    </p>
 
-    <x-danger-button
-        x-data=""
-        x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
-    >{{ __('Delete Account') }}</x-danger-button>
+    <form
+        method="POST"
+        action="{{ route('profile.destroy') }}"
+        onsubmit="return confirm('Apakah kamu yakin ingin menghapus akun secara permanen? Tindakan ini tidak dapat dibatalkan.');"
+    >
+        @csrf
+        @method('DELETE')
 
-    <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
-        <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
-            @csrf
-            @method('delete')
+        <div class="delete-password-field">
+            <label for="delete_password">Kata Sandi Saat Ini</label>
+            <input
+                id="delete_password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                required
+            >
 
-            <h2 class="text-lg font-medium text-gray-900">
-                {{ __('Are you sure you want to delete your account?') }}
-            </h2>
+            @if ($errors->userDeletion->has('password'))
+                <p class="delete-error">
+                    {{ $errors->userDeletion->first('password') }}
+                </p>
+            @endif
+        </div>
 
-            <p class="mt-1 text-sm text-gray-600">
-                {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
-            </p>
+        <button type="submit" class="delete-account-button">
+            Hapus Akun Saya
+        </button>
+    </form>
 
-            <div class="mt-6">
-                <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
+    <style>
+        .delete-description {
+            margin: 0 0 18px;
+            color: #748198;
+            font-size: 12px;
+            line-height: 1.8;
+        }
 
-                <x-text-input
-                    id="password"
-                    name="password"
-                    type="password"
-                    class="mt-1 block w-3/4"
-                    placeholder="{{ __('Password') }}"
-                />
+        .delete-password-field {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
 
-                <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
-            </div>
+        .delete-password-field label {
+            color: #34445e;
+            font-size: 12px;
+            font-weight: 700;
+        }
 
-            <div class="mt-6 flex justify-end">
-                <x-secondary-button x-on:click="$dispatch('close')">
-                    {{ __('Cancel') }}
-                </x-secondary-button>
+        .delete-password-field input {
+            box-sizing: border-box;
+            width: 100%;
+            min-height: 43px;
+            padding: 10px 12px;
+            border: 1px solid #ead8d7;
+            border-radius: 9px;
+            font-size: 13px;
+        }
 
-                <x-danger-button class="ms-3">
-                    {{ __('Delete Account') }}
-                </x-danger-button>
-            </div>
-        </form>
-    </x-modal>
+        .delete-error {
+            margin: 0;
+            color: #dc4545;
+            font-size: 12px;
+        }
+
+        .delete-account-button {
+            width: 100%;
+            padding: 12px 15px;
+            border: 0;
+            border-radius: 10px;
+            background: #c83e46;
+            color: white;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .delete-account-button:hover {
+            background: #a92e36;
+        }
+    </style>
 </section>

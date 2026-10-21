@@ -8,191 +8,231 @@
 
     <style>
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
             font-family: Arial, Helvetica, sans-serif;
         }
 
         body {
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 25px 15px;
+            justify-content: center;
+            padding: 24px 16px;
+            background: linear-gradient(120deg, #050b16, #09172b 52%, #102d55);
+            color: #252b45;
             position: relative;
             overflow-x: hidden;
-            background: linear-gradient(120deg, #061020, #10294b);
         }
 
-        body::before,
-        body::after {
-            content: "";
+        .decoration {
             position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            background: rgba(67, 126, 201, .12);
+        }
+
+        .decoration.one {
             width: 280px;
             height: 280px;
-            border-radius: 50%;
-            background: rgba(55, 91, 145, 0.18);
-            pointer-events: none;
-        }
-
-        body::before {
             top: -120px;
             left: -100px;
         }
 
-        body::after {
-            bottom: -130px;
-            right: -60px;
-            width: 280px;
-            height: 280px;
+        .decoration.two {
+            width: 330px;
+            height: 330px;
+            right: -110px;
+            bottom: -180px;
         }
 
-        .login-card {
+        .auth-container {
             position: relative;
             z-index: 1;
             width: 100%;
             max-width: 400px;
-            padding: 18px 29px 20px;
-            background: #f8faff;
+        }
+
+        .auth-card {
+            padding: 27px 29px;
             border-radius: 20px;
-            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.12);
+            background: #f7f9ff;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, .18);
         }
 
-        .login-header {
+        .auth-logo {
+            width: 100px;
+            height: 78px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-logo svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .auth-header {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 22px;
         }
 
-        .login-header h1 {
-            color: #24283f;
+        .auth-header h1 {
             font-size: 25px;
-            font-weight: 700;
             margin-bottom: 8px;
+            color: #252941;
         }
 
-        .login-header p {
-            color: #8290aa;
-            font-size: 11px;
-            line-height: 1.5;
+        .auth-header p {
+            font-size: 12px;
+            color: #7888a8;
+            line-height: 1.7;
         }
 
         .form-group {
-            margin-bottom: 9px;
+            margin-bottom: 15px;
         }
 
         .form-group label {
             display: block;
-            color: #34415d;
+            margin-bottom: 7px;
+            color: #303955;
             font-size: 13px;
             font-weight: 600;
-            margin-bottom: 6px;
         }
 
         .form-group input {
             width: 100%;
-            height: 38px;
+            height: 42px;
             padding: 0 13px;
-            border: 1px solid #dce3ef;
-            border-radius: 8px;
-            outline: none;
+            border: 1px solid #d9e1f0;
+            border-radius: 9px;
             background: #fff;
-            color: #29334b;
-            font-size: 12px;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            color: #252b45;
+            font-size: 13px;
+            outline: none;
         }
 
         .form-group input:focus {
-            border-color: #5486cf;
-            box-shadow: 0 0 0 3px rgba(84, 134, 207, 0.12);
+            border-color: #5788d3;
+            box-shadow: 0 0 0 3px rgba(87, 136, 211, .13);
         }
 
         .form-group input::placeholder {
-            color: #a0aec4;
+            color: #9aa9c3;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 45px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: transparent;
+            color: #71809b;
+            cursor: pointer;
+        }
+
+        .toggle-password svg {
+            width: 20px;
+            height: 20px;
         }
 
         .form-options {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 8px;
-            margin: 10px 0 13px;
+            gap: 10px;
+            margin: 2px 0 17px;
             font-size: 11px;
+            color: #77839b;
         }
 
         .remember {
             display: flex;
             align-items: center;
             gap: 6px;
-            color: #71809a;
         }
 
         .remember input {
-            accent-color: #4775bd;
+            accent-color: #4779c5;
         }
 
-        .form-options a,
-        .register-text a {
-            color: #3265b7;
+        a {
+            color: #3264b8;
             text-decoration: none;
         }
 
-        .form-options a:hover,
-        .register-text a:hover {
+        a:hover {
             text-decoration: underline;
         }
 
-        .login-button {
+        .submit-button {
             width: 100%;
-            height: 39px;
+            height: 42px;
             border: none;
             border-radius: 9px;
-            background: linear-gradient(100deg, #588bd5, #416bb3);
+            background: linear-gradient(100deg, #568bd8, #416bb5);
             color: white;
             font-size: 12px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
-            transition: opacity 0.2s, transform 0.2s;
         }
 
-        .login-button:hover {
-            opacity: 0.92;
-            transform: translateY(-1px);
+        .submit-button:hover {
+            background: linear-gradient(100deg, #477bc6, #345ba0);
         }
 
-        .login-button:disabled {
-            opacity: 0.65;
-            cursor: not-allowed;
+        .message {
+            padding: 10px 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
         }
 
         .error-message {
-            padding: 9px 11px;
-            margin-bottom: 12px;
-            border: 1px solid #f1c6c6;
-            border-radius: 7px;
+            color: #b42332;
             background: #fff0f0;
-            color: #b42318;
-            font-size: 12px;
-            line-height: 1.5;
+            border: 1px solid #f0cccc;
         }
 
         .success-message {
-            padding: 9px 11px;
-            margin-bottom: 12px;
-            border: 1px solid #b8e2c5;
-            border-radius: 7px;
-            background: #effbf2;
-            color: #21713b;
-            font-size: 12px;
+            color: #237545;
+            background: #e7f7ed;
+            border: 1px solid #c4ebd1;
+        }
+
+        .message ul {
+            padding-left: 18px;
         }
 
         .divider {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin: 12px 0 14px;
-            color: #8491a8;
-            font-size: 12px;
+            margin: 19px 0 16px;
+            color: #8994ac;
+            font-size: 11px;
         }
 
         .divider::before,
@@ -200,188 +240,244 @@
             content: "";
             height: 1px;
             flex: 1;
-            background: #dfe5ef;
+            background: #e0e5ef;
         }
 
-        .social-login {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 48px;
-            margin-bottom: 16px;
-        }
-
-        .social-login a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 22px;
-            height: 24px;
-            color: #70819d;
-            text-decoration: none;
-            font-size: 23px;
-            font-weight: bold;
-            transition: color 0.2s, transform 0.2s;
-        }
-
-        .social-login a:hover {
-            color: #416fba;
-            transform: translateY(-2px);
-        }
-
-        .social-login .music-icon {
-            font-size: 21px;
-        }
-
-        .register-text {
+        .register-link {
+            margin-top: 19px;
             text-align: center;
-            color: #7d8aa1;
             font-size: 12px;
-            margin-bottom: 0;
+            color: #7c879f;
         }
 
-        .register-text a {
+        .register-link a {
             font-weight: 600;
         }
 
-        .legal-links {
+        .footer-links {
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
-            align-items: center;
-            gap: 8px;
-            margin-top: 15px;
-            padding-top: 12px;
-            border-top: 1px solid #e1e7f1;
-            color: #9aa5b8;
+            flex-wrap: wrap;
+            gap: 9px;
+            border-top: 1px solid #e0e5ef;
+            margin-top: 19px;
+            padding-top: 14px;
             font-size: 10px;
         }
 
-        .legal-links a {
-            color: #5278b8;
-            text-decoration: none;
-        }
-
-        .legal-links a:hover {
-            color: #244f98;
-            text-decoration: underline;
+        .footer-links span {
+            color: #a4aec1;
         }
 
         @media (max-width: 480px) {
-            .login-card {
-                max-width: 400px;
-                padding: 24px 22px;
-                border-radius: 17px;
+            .auth-card {
+                padding: 25px 22px;
             }
 
-            .login-header h1 {
-                font-size: 23px;
-            }
-
-            .social-login {
-                gap: 40px;
+            .auth-logo {
+                width: 88px;
+                height: 70px;
             }
         }
     </style>
 </head>
 
 <body>
+    <div class="decoration one"></div>
+    <div class="decoration two"></div>
 
-    <div class="login-card">
+    <main class="auth-container">
+        <section class="auth-card">
 
-        <div class="login-header">
-            <h1>Welcome Back</h1>
-            <p>
-                Lanjutkan perjalananmu.<br>
-                Jalanmu sudah menunggu.
-            </p>
-        </div>
+            <header class="auth-header">
+                <div class="auth-logo">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 160 130"
+                         role="img"
+                         aria-label="Burung merpati terbang">
 
-        @if (session('status'))
-            <div class="success-message">
-                {{ session('status') }}
-            </div>
-        @endif
+                        <g fill="#10396D">
+                            <!-- Sayap utama -->
+                            <path d="M78 72
+                            C60 55 35 25 36 5
+                            C53 23 72 39 88 54
+                            C82 35 82 19 91 8
+                            C99 29 108 44 115 57
+                            C119 42 128 33 138 31
+                            C133 48 128 61 119 72
+                            L103 91 L76 99Z"/>
 
-        @if ($errors->any())
-            <div class="error-message">
-                @foreach ($errors->all() as $error)
-                    <div>{{ $error }}</div>
-                @endforeach
-            </div>
-        @endif
+                            <!-- Tiga lapisan bulu sayap -->
+                            <path d="M77 70
+                            C54 61 29 46 13 27
+                            C19 49 41 69 68 81
+                            L86 88 L96 78Z"/>
 
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
+                            <path d="M76 76
+                            C54 73 34 65 20 53
+                            C30 73 49 86 73 91
+                            L92 91 L100 82Z"/>
 
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value="{{ old('email') }}"
-                    placeholder="nama@gmail.com"
-                    autocomplete="email"
-                    required
-                    autofocus
-                >
-            </div>
+                            <path d="M79 82
+                            C60 88 43 88 29 83
+                            C43 100 61 103 83 98
+                            L101 89 L99 82Z"/>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Masukkan password"
-                    autocomplete="current-password"
-                    required
-                >
-            </div>
+                            <!-- Badan dan leher -->
+                            <path d="M70 77
+                            C79 64 91 56 105 60
+                            C115 63 119 71 118 79
+                            C116 92 103 102 85 107
+                            C68 112 49 110 34 103
+                            C48 105 62 99 70 90
+                            C74 86 74 81 70 77Z"/>
 
-            <div class="form-options">
-                <label class="remember">
-                    <input type="checkbox" name="remember" value="1">
-                    <span>Remember me</span>
-                </label>
+                            <!-- Kepala dan paruh -->
+                            <path d="M101 65
+                            C101 53 108 46 117 47
+                            C126 48 131 55 129 62
+                            L143 67 L128 70
+                            C124 77 114 79 107 74Z"/>
 
-                @if (Route::has('password.request'))
+                            <!-- Ekor -->
+                            <path d="M48 99
+                            L8 111 L40 104
+                            L18 121 L57 107Z"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <h1>Welcome Back</h1>
+                <p>
+                    Lanjutkan perjalananmu.
+                    <br>
+                    Jalanmu sudah menunggu.
+                </p>
+            </header>
+
+            @if (session('status'))
+                <div class="message success-message">
+                    {{ session('status') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="message error-message">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input
+                        id="email"
+                        type="email"
+                        name="email"
+                        value="{{ old('email') }}"
+                        placeholder="nama@gmail.com"
+                        autocomplete="username"
+                        required
+                        autofocus
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+
+                    <div class="password-wrapper">
+                        <input
+                            id="password"
+                            type="password"
+                            name="password"
+                            placeholder="Masukkan password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button type="button"
+                                class="toggle-password"
+                                aria-label="Tampilkan password"
+                                aria-pressed="false"
+                                onclick="togglePassword('password', this)">
+                            <svg viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="1.8"
+                                 stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember">
+                        <input type="checkbox" name="remember" value="1">
+                        <span>Remember me</span>
+                    </label>
+
                     <a href="{{ route('password.request') }}">
                         Forgot password?
                     </a>
-                @endif
+                </div>
+
+                <button type="submit" class="submit-button">
+                    LOG IN
+                </button>
+            </form>
+
+            <div class="divider">Login with</div>
+
+            <div class="register-link">
+                Belum punya akun?
+                <a href="{{ route('register') }}">Create account</a>
             </div>
 
-            <button type="submit" class="login-button">
-                LOG IN
-            </button>
-        </form>
+            <footer class="footer-links">
+                <a href="{{ url('/privacy-policy') }}">Kebijakan Privasi</a>
+                <span>-</span>
+                <a href="{{ url('/terms-of-service') }}">Ketentuan Layanan</a>
+            </footer>
 
-        <div class="divider">
-            <span>Login with</span>
-        </div>
+        </section>
+    </main>
 
-        <div class="social-login">
-            <a href="{{ url('/auth/facebook') }}" aria-label="Login dengan Facebook">f</a>
-            <a href="{{ url('/auth/google') }}" aria-label="Login dengan Google">G</a>
-            <a href="{{ url('/auth/tiktok') }}" class="music-icon" aria-label="Login dengan TikTok">【ᕷ】</a>
-        </div>
+    <script>
+        function togglePassword(inputId, button) {
+            const input = document.getElementById(inputId);
+            const visible = input.type === 'password';
 
-        <p class="register-text">
-            Belum punya akun?
-            <a href="{{ Route::has('register') ? route('register') : url('/register') }}">
-                Create account
-            </a>
-        </p>
+            input.type = visible ? 'text' : 'password';
+            button.setAttribute('aria-pressed', String(visible));
+            button.setAttribute(
+                'aria-label',
+                visible ? 'Sembunyikan password' : 'Tampilkan password'
+            );
 
-        <div class="legal-links">
-            <a href="{{ url('/privacy-policy') }}">Kebijakan Privasi</a>
-            <span>•</span>
-            <a href="{{ url('/terms-of-service') }}">Ketentuan Layanan</a>
-        </div>
-
-    </div>
-
+            button.innerHTML = visible
+                ? `<svg viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 3l18 18"/>
+                    <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/>
+                    <path d="M9.9 5.2A10.8 10.8 0 0 1 12 5
+                    c6.4 0 10 7 10 7a16 16 0 0 1-3.1 3.9"/>
+                    <path d="M6.2 6.2C3.5 8 2 12 2 12
+                    s3.6 7 10 7c1.2 0 2.3-.2 3.3-.6"/>
+                    </svg>`
+                : `<svg viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                    </svg>`;
+        }
+    </script>
 </body>
 </html>

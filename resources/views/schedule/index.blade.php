@@ -1,54 +1,120 @@
+
 @extends('layouts.app')
+
 @section('title', 'Terjadwal')
+
 @section('content')
-<div class="card">
-    <div class="row">
-        <div><b>Scheduler berjalan tiap menit</b>
-            <p class="muted sm" style="margin:0">Cron server memanggil <code>php artisan schedule:run</code>, lalu posting yang waktunya tiba masuk ke antrean.</p></div>
+<section class="card">
+    <div class="row" style="align-items:center;justify-content:space-between;gap:12px">
+        <div>
+            <h2 style="margin:0 0 6px">Posting Terjadwal</h2>
+            <p class="muted" style="margin:0">
+                Pantau jadwal publikasi dan periksa status posting Anda.
+            </p>
+        </div>
+
+        <a class="btn primary" href="{{ route('posts.create') }}">
+            Buat posting
+        </a>
     </div>
-</div>
+</section>
 
-<div class="tabs">
-    <a href="{{ route('schedule.index') }}" @class(['on' => $view === 'list'])>Daftar</a>
-    <a href="{{ route('schedule.index', ['view' => 'cal']) }}" @class(['on' => $view === 'cal'])>Kalender</a>
-</div>
+<section class="card">
+    <h3 style="margin-top:0">Daftar Posting Terjadwal</h3>
 
-@if($view === 'list')
-    <section class="card">
-        <h3>Akan terbit</h3>
-        @forelse($upcoming as $post)@include('partials.post-row', ['post' => $post, 'mode' => 'schedule'])
-        @empty<div class="empty">Belum ada posting terjadwal. <a href="{{ route('posts.create') }}">Buat jadwal baru</a></div>@endforelse
-    </section>
-    @if($past->isNotEmpty())
-        <section class="card">
-            <h3>Sudah lewat</h3>
-            @foreach($past as $post)@include('partials.post-row', ['post' => $post, 'mode' => 'schedule'])@endforeach
-        </section>
-    @endif
-@else
-    <section class="card">
-        <div class="row" style="margin-bottom:12px">
-            <a class="btn sm" href="{{ route('schedule.index', ['view' => 'cal', 'm' => $prev]) }}" aria-label="Bulan sebelumnya">&larr;</a>
-            <h3 style="margin:0;min-width:160px;text-align:center">{{ $month->translatedFormat('F Y') }}</h3>
-            <a class="btn sm" href="{{ route('schedule.index', ['view' => 'cal', 'm' => $next]) }}" aria-label="Bulan berikutnya">&rarr;</a>
+    <form method="GET" action="{{ route('schedule.index') }}"
+          id="scheduleFilter" class="form">
+        <input type="hidden" name="view" value="list">
+
+        <div class="field">
+            <label for="scheduleSearch">Pencarian</label>
+            <input
+                id="scheduleSearch"
+                type="search"
+                name="q"
+                value="{{ $keyword ?? request('q') }}"
+                placeholder="Cari caption atau platform..."
+                autocomplete="off"
+                style="width:100%;min-height:52px;padding:12px 16px;border:1px solid #dbe3ee;border-radius:12px;font:inherit"
+            >
         </div>
-        <div class="cal">
-            @foreach(['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'] as $h)<div class="dh">{{ $h }}</div>@endforeach
-            @foreach($days as $d)
-                @php $k = $d->format('Y-m-d'); $items = $byDay[$k] ?? collect(); @endphp
-                <a class="day {{ $d->month !== $month->month ? 'out' : '' }} {{ $d->isToday() ? 'today' : '' }} {{ $k === $selected ? 'sel' : '' }}"
-                   href="{{ route('schedule.index', ['view' => 'cal', 'm' => $month->format('Y-m'), 'd' => $k]) }}">
-                    <span class="dn">{{ $d->day }}</span>
-                    @foreach($items->take(2) as $p)<span class="pill {{ $p->overall()[1] }}">{{ $p->scheduled_at->format('H:i') }} {{ \Illuminate\Support\Str::limit($p->title(), 10) }}</span>@endforeach
-                    @if($items->count() > 2)<span class="pill muted">+{{ $items->count() - 2 }} lagi</span>@endif
-                </a>
-            @endforeach
+
+        <div class="field">
+            <label for="scheduleStatus">Status</label>
+            <select id="scheduleStatus" name="status"
+                    style="width:100%;min-height:48px;padding:10px 14px;border:1px solid #dbe3ee;border-radius:12px;font:inherit">
+                <option value="">Semua status</option>
+                <option value="scheduled" @selected(($status ?? '') === 'scheduled')>Menunggu jadwal</option>
+                <option value="processing" @selected(($status ?? '') === 'processing')>Sedang diproses</option>
+                <option value="done" @selected(($status ?? '') === 'done')>Selesai</option>
+                <option value="canceled" @selected(($status ?? '') === 'canceled')>Dibatalkan</option>
+            </select>
         </div>
-    </section>
-    <section class="card">
-        <h3>Jadwal pada {{ \Illuminate\Support\Carbon::parse($selected)->translatedFormat('j F Y') }}</h3>
-        @forelse($byDay[$selected] ?? [] as $post)@include('partials.post-row', ['post' => $post, 'mode' => 'schedule'])
-        @empty<div class="empty">Tidak ada jadwal di tanggal ini.</div>@endforelse
-    </section>
-@endif
+
+        <noscript><button class="btn primary" type="submit">Cari</button></noscript>
+    </form>
+</section>
+
+<section class="card">
+    <h3 style="margin-top:0">Jadwal Berikutnya</h3>
+
+    @forelse($upcoming as $post)
+        @include('partials.post-row', ['post' => $post, 'mode' => 'plain'])
+    @empty
+        <div class="empty">
+            Belum ada posting yang menunggu publikasi.
+        </div>
+    @endforelse
+</section>
+
+<section class="card">
+    <h3 style="margin-top:0">Jadwal Sebelumnya</h3>
+
+    @forelse($past as $post)
+        @include('partials.post-row', ['post' => $post, 'mode' => 'history'])
+    @empty
+        <div class="empty">
+            Belum ada riwayat jadwal sebelumnya.
+        </div>
+    @endforelse
+</section>
+
+<script>
+(function () {
+    const form = document.getElementById('scheduleFilter');
+    const input = document.getElementById('scheduleSearch');
+    const status = document.getElementById('scheduleStatus');
+
+    if (!form || !input || !status) return;
+
+    let timer;
+    let lastValue = input.value.trim();
+
+    input.addEventListener('input', function () {
+        clearTimeout(timer);
+
+        const value = input.value.trim();
+
+        if (value === lastValue) return;
+        if (value.length > 0 && value.length < 2) return;
+
+        timer = setTimeout(function () {
+            lastValue = value;
+            form.submit();
+        }, 500);
+    });
+
+    input.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            clearTimeout(timer);
+            form.submit();
+        }
+    });
+
+    status.addEventListener('change', function () {
+        form.submit();
+    });
+})();
+</script>
 @endsection

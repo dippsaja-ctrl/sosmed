@@ -35,7 +35,6 @@ Route::get('/terms-of-service', [LegalController::class, 'terms'])
 |--------------------------------------------------------------------------
 | OAuth Media Sosial
 |--------------------------------------------------------------------------
-| Sesuaikan method dengan OAuthController yang ada di proyek.
 */
 
 Route::get('/auth/{provider}', [OAuthController::class, 'redirect'])
@@ -54,27 +53,18 @@ Route::get('/auth/{provider}/callback', [OAuthController::class, 'callback'])
 
 Route::middleware('auth')->group(function () {
 
-    /*
-    | Dashboard
-    */
-
+    // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
-    /*
-    | Akun Media Sosial
-    */
-
+    // Akun Media Sosial
     Route::get('/accounts', [SocialAccountController::class, 'index'])
         ->name('accounts.index');
 
     Route::delete('/accounts/{socialAccount}', [SocialAccountController::class, 'destroy'])
         ->name('accounts.destroy');
 
-    /*
-    | Posting
-    */
-
+    // Posting
     Route::get('/posts/create', [PostController::class, 'create'])
         ->name('posts.create');
 
@@ -99,17 +89,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/posts/{post}/cancel', [PostController::class, 'cancel'])
         ->name('posts.cancel');
 
-    /*
-    | Jadwal Posting
-    */
-
+    // Jadwal Posting
     Route::get('/schedule', [ScheduleController::class, 'index'])
         ->name('schedule.index');
 
-    /*
-    | Riwayat Posting
-    */
-
+    // Riwayat Posting
     Route::get('/history', [HistoryController::class, 'index'])
         ->name('history.index');
 
@@ -119,16 +103,18 @@ Route::middleware('auth')->group(function () {
     Route::post('/history/{post}/retry-all', [HistoryController::class, 'retryAll'])
         ->name('history.retry-all');
 
-    /*
-    | Profil
-    */
-
+    // Profil
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
 
     Route::patch('/profile', [ProfileController::class, 'update'])
         ->name('profile.update');
 
+    // Hapus foto profil
+    Route::delete('/profile/photo', [ProfileController::class, 'deletePhoto'])
+        ->name('profile.photo.delete');
+
+    // Hapus akun pengguna
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 });
@@ -137,8 +123,6 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 | Route Autentikasi Laravel
 |--------------------------------------------------------------------------
-| File ini biasanya menyediakan login, register, logout,
-| dan reset password jika proyek menggunakan Laravel Breeze.
 */
 
 require __DIR__.'/auth.php';
