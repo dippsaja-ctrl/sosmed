@@ -251,7 +251,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('register') }}">
+        <form method="POST" action="{{ route('register', absolute: false) }}">
             @csrf
 
             <div class="form-group">
