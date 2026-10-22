@@ -44,6 +44,7 @@ class PostTarget extends Model
     {
         return self::LABELS[$this->status]
             ?? [$this->status, 'muted'];
+
     }
 
     public function histories(): HasMany
@@ -53,8 +54,4 @@ class PostTarget extends Model
             'post_target_id'
         );
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> 645607949a780e1c0ec292546c23efdc46250fff
 }

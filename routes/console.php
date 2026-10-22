@@ -14,21 +14,13 @@ Schedule::command('posts:dispatch-due')
     ->everyMinute()
     ->withoutOverlapping();
 
-<<<<<<< HEAD
-// Perbarui token yang hampir kedaluwarsa (refresh token otomatis).
-Schedule::command('tokens:refresh')->everyTenMinutes()->withoutOverlapping();
-=======
 // Perbarui token yang hampir kedaluwarsa.
 Schedule::command('tokens:refresh')
     ->everyTenMinutes()
     ->withoutOverlapping();
->>>>>>> 645607949a780e1c0ec292546c23efdc46250fff
 
 // Perbarui token akun media sosial.
 Schedule::command('social:refresh-tokens')
     ->everyFifteenMinutes()
     ->withoutOverlapping();
-<<<<<<< HEAD
 
-=======
->>>>>>> 645607949a780e1c0ec292546c23efdc46250fff

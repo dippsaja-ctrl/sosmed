@@ -65,16 +65,7 @@ class Post extends Model
             ?: ($this->yt_meta['title'] ?? '(tanpa caption)');
     }
 
-<<<<<<< HEAD
-    public function media()      
-    { 
-        return $this->hasMany(PostMedia::class)->orderBy('position'); 
-    }
-
-    public function deliveries() 
-=======
     public function media(): HasMany
->>>>>>> 645607949a780e1c0ec292546c23efdc46250fff
     {
         return $this->hasMany(PostMedia::class)
             ->orderBy('position');
@@ -85,9 +76,8 @@ class Post extends Model
         return $this->hasMany(PostDelivery::class);
     }
 
-<<<<<<< HEAD
     /** @return array{0:string,1:string} [label, kelas css] */
-=======
+
     public function histories(): HasMany
     {
         return $this->hasMany(PostHistory::class);
@@ -98,7 +88,7 @@ class Post extends Model
      *
      * @return array{0:string,1:string}
      */
->>>>>>> 645607949a780e1c0ec292546c23efdc46250fff
+
     public function overall(): array
     {
         if ($this->state === 'canceled') {

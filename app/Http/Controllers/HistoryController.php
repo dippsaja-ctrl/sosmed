@@ -13,18 +13,11 @@ class HistoryController extends Controller
     {
         $filter = $request->query('f', 'all');
 
-<<<<<<< HEAD
-        $q = Post::with(['targets.histories' => fn ($h) => $h->latest()])
-            ->where('user_id', auth()->id())
-            ->whereIn('state', ['processing', 'done']);
-        $q = Post::with('targets')->where('user_id', auth()->id())->whereIn('state', ['processing', 'done']);
-=======
         $q = Post::with([
             'targets.histories' => fn ($h) => $h->latest(),
         ])
             ->where('user_id', auth()->id())
             ->whereIn('state', ['processing', 'done']);
->>>>>>> 645607949a780e1c0ec292546c23efdc46250fff
 
         if ($filter === 'bad') {
             $q->whereHas('targets', fn ($t) => $t->where('status', 'failed'));
@@ -72,23 +65,11 @@ class HistoryController extends Controller
         $post->update(['state' => 'processing']);
 
         PublishToPlatform::dispatch($target, 1)->onQueue('uploads');
-<<<<<<< HEAD
-
-        $target = $post->targets()->where('platform', $platform)->where('status', 'failed')->firstOrFail();
-
-        $target->update(['status' => 'queued', 'error' => null, 'attempts' => 0]);
-        $post->update(['state' => 'processing']);
-        PublishToPlatform::dispatch($target, 1);
-
-
-        return back()->with('ok', 'Mencoba lagi ke '.config("posting.platforms.$platform.label").'.');
-=======
 
         return back()->with(
             'ok',
             'Mencoba lagi ke '.config("posting.platforms.$platform.label", ucfirst($platform)).'.'
         );
->>>>>>> 645607949a780e1c0ec292546c23efdc46250fff
     }
 
     public function retryAll(Post $post)
@@ -192,17 +173,4 @@ class HistoryController extends Controller
         return null;
     }
 }
-<<<<<<< HEAD
-        $failed = $post->targets()->where('status', 'failed')->get();
-        abort_if($failed->isEmpty(), 404);
 
-        $post->update(['state' => 'processing']);
-        foreach ($failed as $target) {
-            $target->update(['status' => 'queued', 'error' => null, 'attempts' => 0]);
-            PublishToPlatform::dispatch($target, 1);
-        }
-        return back()->with('ok', 'Mencoba lagi semua platform yang gagal.');
-    }
-}
-=======
->>>>>>> 645607949a780e1c0ec292546c23efdc46250fff

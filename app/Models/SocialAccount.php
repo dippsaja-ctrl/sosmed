@@ -57,15 +57,8 @@ class SocialAccount extends Model
         if ($this->expires_at === null || ! $life) {
             return false;
         }
-<<<<<<< HEAD
-        return $this->expires_at->lt(now()->addSeconds((int) ($life * 0.2)));
-    }
-=======
->>>>>>> 645607949a780e1c0ec292546c23efdc46250fff
 
-        return $this->expires_at->lt(
-            now()->addSeconds((int) ($life * 0.2))
-        );
+        return $this->expires_at->lt(now()->addSeconds((int) ($life * 0.2)));
     }
 
     /**
@@ -81,8 +74,4 @@ class SocialAccount extends Model
             ->whereNotNull('expires_at')
             ->where('expires_at', '<=', now()->addMinutes($minutes));
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> 645607949a780e1c0ec292546c23efdc46250fff
 }

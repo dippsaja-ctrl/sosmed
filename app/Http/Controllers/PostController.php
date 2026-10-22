@@ -5,10 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\PublishToPlatform;
 use App\Models\Post;
 use App\Models\SocialAccount;
-<<<<<<< HEAD
 use App\Models\ScheduledPost;
-=======
->>>>>>> 645607949a780e1c0ec292546c23efdc46250fff
 use App\Support\PostValidator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -236,19 +233,16 @@ class PostController extends Controller
                 'state' => 'scheduled',
             ]);
 
+            ScheduledPost::updateOrCreate(
+                ['post_id' => $post->id],
+                ['scheduled_at' => $post->scheduled_at, 'status' => 'pending', 'last_error' => null]
+            );
+
             return redirect()
                 ->route('schedule.index')
                 ->with('ok', 'Posting dijadwalkan dan akan terbit otomatis.');
         }
 
-<<<<<<< HEAD
-        $post->update(['state' => 'processing']);
-        foreach ($post->targets as $target) {
-            PublishToPlatform::dispatch($target, 1)->onQueue('uploads');
-            PublishToPlatform::dispatch($target, 1);
-        }
-        return redirect()->route('history.index')->with('ok', 'Posting dikirim ke antrean. Status diperbarui otomatis di Riwayat.');
-=======
         // Masukkan setiap target ke antrean upload.
         DB::transaction(function () use ($post) {
             $post->update([
@@ -268,7 +262,7 @@ class PostController extends Controller
                 'Posting dikirim ke antrean. '
                 . 'Status diperbarui otomatis di Riwayat.'
             );
->>>>>>> 645607949a780e1c0ec292546c23efdc46250fff
+
     }
 
     /**
@@ -400,6 +394,10 @@ class PostController extends Controller
                 'yt_meta'      => $youtube,
             ]);
 
+            ScheduledPost::where('post_id', $post->id)
+                ->where('status', 'pending')
+                ->update(['scheduled_at' => Carbon::parse($data['scheduled_at'])]);
+
             // Hapus target yang tidak lagi dipilih.
             $post->targets()
                 ->whereNotIn('platform', $data['targets'])
@@ -436,6 +434,10 @@ class PostController extends Controller
             $post->targets()->update([
                 'status' => 'canceled',
             ]);
+
+            ScheduledPost::where('post_id', $post->id)
+                ->where('status', 'pending')
+                ->update(['status' => 'canceled']);
         });
 
         return redirect()
@@ -457,25 +459,5 @@ class PostController extends Controller
             Storage::disk('public')->deleteDirectory($directory);
         }
     }
-<<<<<<< HEAD
-
-    // confirm(), cabang schedule:
-    $post->update(['state' => 'scheduled']);
-    ScheduledPost::updateOrCreate(
-        ['post_id' => $post->id],
-        ['scheduled_at' => $post->scheduled_at, 'status' => 'pending', 'last_error' => null]
-    );
-
-    // update(), di dalam DB::transaction setelah $post->update([...]):
-    ScheduledPost::where('post_id', $post->id)
-        ->where('status', 'pending')
-        ->update(['scheduled_at' => Carbon::parse($data['scheduled_at'])]);
-
-    // cancel(), setelah $post->update(['state' => 'canceled']):
-    ScheduledPost::where('post_id', $post->id)
-        ->where('status', 'pending')
-        ->update(['status' => 'canceled']);
 }
-=======
-}
->>>>>>> 645607949a780e1c0ec292546c23efdc46250fff
+
