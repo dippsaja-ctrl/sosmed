@@ -1,14 +1,13 @@
-
-@extends('layouts.app')
+ @extends('layouts.app')
 
 @section('title', 'Profil Saya')
 
 @section('content')
 <style>
     .profile-page {
-        max-width: 1100px;
+        max-width: 1200px;
         margin: 0 auto;
-        padding: 28px;
+        padding: 24px;
         color: #10243b;
     }
 
@@ -17,7 +16,7 @@
         justify-content: space-between;
         align-items: flex-start;
         gap: 16px;
-        margin-bottom: 24px;
+        margin-bottom: 22px;
     }
 
     .profile-heading h1 {
@@ -33,7 +32,9 @@
         line-height: 1.6;
     }
 
-    .profile-heading p { margin: 0; }
+    .profile-heading p {
+        margin: 0;
+    }
 
     .profile-close {
         width: 42px;
@@ -57,22 +58,31 @@
 
     .profile-grid {
         display: grid;
-        grid-template-columns: 280px minmax(0, 1fr);
+        grid-template-columns: 270px minmax(0, 1fr);
         gap: 22px;
         align-items: start;
     }
 
-    .profile-card {
-        margin-bottom: 20px;
-        padding: 24px;
-        background: white;
-        border: 1px solid #e0e7ef;
-        border-radius: 17px;
-        box-shadow: 0 5px 18px rgba(20,45,75,.04);
+    .profile-left-column {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
         min-width: 0;
     }
 
-    .profile-summary { text-align: center; }
+    .profile-card {
+        min-width: 0;
+        padding: 23px;
+        box-sizing: border-box;
+        background: #fff;
+        border: 1px solid #e0e7ef;
+        border-radius: 17px;
+        box-shadow: 0 5px 18px rgba(20, 45, 75, .04);
+    }
+
+    .profile-summary {
+        text-align: center;
+    }
 
     .profile-photo-wrapper {
         display: flex;
@@ -129,7 +139,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        border: 3px solid white;
+        border: 3px solid #fff;
         border-radius: 50%;
         background: #1265ad;
         color: white;
@@ -147,10 +157,6 @@
         font-size: 12px;
         overflow-wrap: anywhere;
         text-align: center;
-    }
-
-    .profile-delete-photo-form {
-        margin-top: 12px;
     }
 
     .profile-summary h2 {
@@ -182,7 +188,28 @@
         font-weight: 750;
     }
 
-    .profile-description { margin: 0 0 22px; }
+    .profile-description {
+        margin: 0 0 19px;
+    }
+
+    .profile-settings {
+        padding: 25px;
+    }
+
+    .profile-settings-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 25px;
+    }
+
+    .profile-section {
+        min-width: 0;
+    }
+
+    .profile-section + .profile-section {
+        padding-left: 25px;
+        border-left: 1px solid #e7edf4;
+    }
 
     .profile-form label.field-label {
         display: block;
@@ -192,10 +219,11 @@
     }
 
     .profile-form input:not([type="hidden"]):not([type="file"]) {
+        display: block;
         width: 100%;
         box-sizing: border-box;
         margin-bottom: 17px;
-        padding: 12px 13px;
+        padding: 11px 12px;
         border: 1px solid #dbe3ed;
         border-radius: 9px;
         background: white;
@@ -206,11 +234,15 @@
 
     .profile-form input:focus {
         border-color: #2878c7;
-        box-shadow: 0 0 0 3px rgba(40,120,199,.1);
+        box-shadow: 0 0 0 3px rgba(40, 120, 199, .1);
     }
 
     .profile-button {
-        padding: 11px 17px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 40px;
+        padding: 10px 15px;
         border: 0;
         border-radius: 9px;
         background: #1265ad;
@@ -218,9 +250,13 @@
         font-size: 13px;
         font-weight: 650;
         cursor: pointer;
+        text-align: center;
+        transition: background .2s ease;
     }
 
-    .profile-button:hover { background: #0d508d; }
+    .profile-button:hover {
+        background: #0d508d;
+    }
 
     .profile-button-danger {
         background: #c93636;
@@ -230,8 +266,42 @@
         background: #a82424;
     }
 
-    .profile-danger { border-color: #f0dada; }
-    .profile-danger h3 { color: #b42318; }
+    .profile-delete-photo-form {
+        margin-top: 13px;
+    }
+
+    .profile-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #e7edf4;
+    }
+
+    .profile-actions .profile-button {
+        flex: 1 1 180px;
+    }
+
+    .profile-danger-card {
+        border-color: #f0dada;
+    }
+
+    .profile-danger-card h3 {
+        color: #b42318;
+    }
+
+    .profile-danger-note {
+        margin: 0 0 17px;
+        padding: 12px;
+        border: 1px solid #f2dada;
+        border-radius: 9px;
+        background: #fff7f7;
+        color: #8f3434;
+        font-size: 12px;
+        line-height: 1.6;
+    }
 
     .profile-error {
         margin: -11px 0 14px;
@@ -248,11 +318,51 @@
         font-size: 14px;
     }
 
+    @media (max-width: 1000px) {
+        .profile-grid {
+            grid-template-columns: 235px minmax(0, 1fr);
+            gap: 16px;
+        }
+
+        .profile-card,
+        .profile-settings {
+            padding: 18px;
+        }
+
+        .profile-settings-row {
+            grid-template-columns: 1fr;
+            gap: 23px;
+        }
+
+        .profile-section + .profile-section {
+            padding: 23px 0 0;
+            border-left: none;
+            border-top: 1px solid #e7edf4;
+        }
+    }
+
     @media (max-width: 760px) {
-        .profile-page { padding: 18px 13px; }
-        .profile-grid { grid-template-columns: 1fr; }
-        .profile-heading h1 { font-size: 23px; }
-        .profile-card { padding: 19px; }
+        .profile-page {
+            padding: 18px 13px;
+        }
+
+        .profile-grid {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .profile-heading h1 {
+            font-size: 23px;
+        }
+
+        .profile-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .profile-actions .profile-button {
+            width: 100%;
+            flex-basis: auto;
+        }
     }
 </style>
 
@@ -288,135 +398,62 @@
     @endif
 
     <div class="profile-grid">
-        <div class="profile-card profile-summary">
-            <div class="profile-photo-wrapper">
-                <label for="profile_photo"
-                       class="profile-photo-button"
-                       title="Klik untuk mengganti foto">
 
-                    <span class="profile-avatar profile-avatar-initial"
-                          id="profileInitial"
-                          @if ($user->profile_photo) hidden @endif>{{ mb_strtoupper(mb_substr(trim($user->name), 0, 1, 'UTF-8'), 'UTF-8') ?: '?' }}</span>
+        {{-- KOLOM KIRI: FOTO PROFIL DAN HAPUS AKUN --}}
+        <div class="profile-left-column">
 
-                    <img class="profile-avatar"
-                         id="profilePreview"
-                         src="{{ $user->profile_photo ? asset('storage/' . $user->profile_photo) : '' }}"
-                         alt="Foto profil"
-                         @if (!$user->profile_photo) hidden @endif>
+            <div class="profile-card profile-summary">
+                <div class="profile-photo-wrapper">
+                    <label for="profile_photo"
+                           class="profile-photo-button"
+                           title="Klik untuk mengganti foto">
 
-                    <span class="profile-pencil" aria-hidden="true">✎</span>
-                </label>
+                        <span class="profile-avatar profile-avatar-initial"
+                              id="profileInitial"
+                              @if ($user->profile_photo) hidden @endif>{{ mb_strtoupper(mb_substr(trim($user->name), 0, 1, 'UTF-8'), 'UTF-8') ?: '?' }}</span>
 
-                <p class="profile-photo-hint">Klik ikon pensil untuk mengganti foto</p>
-                <p id="photoFileName" class="profile-photo-hint" hidden></p>
+                        <img class="profile-avatar"
+                             id="profilePreview"
+                             src="{{ $user->profile_photo ? asset('storage/' . $user->profile_photo) : '' }}"
+                             alt="Foto profil"
+                             @if (!$user->profile_photo) hidden @endif>
+
+                        <span class="profile-pencil" aria-hidden="true">✎</span>
+                    </label>
+
+                    <p class="profile-photo-hint">Klik ikon pensil untuk mengganti foto</p>
+                    <p id="photoFileName" class="profile-photo-hint" hidden></p>
+                </div>
+
+                <h2 id="profileDisplayName">{{ $user->name }}</h2>
+                <div class="profile-email" id="profileDisplayEmail">{{ $user->email }}</div>
+                <span class="profile-tag">Akun aktif</span>
+
+                @if ($user->profile_photo)
+                    <form class="profile-delete-photo-form"
+                          method="POST"
+                          action="{{ route('profile.photo.delete') }}"
+                          onsubmit="return confirm('Hapus foto profil dan kembalikan avatar ke huruf awal nama?');">
+                        @csrf
+                        @method('DELETE')
+
+                        <button type="submit" class="profile-button profile-button-danger">
+                            Hapus Foto Profil
+                        </button>
+                    </form>
+                @endif
             </div>
 
-            <h2 id="profileDisplayName">{{ $user->name }}</h2>
-            <div class="profile-email" id="profileDisplayEmail">{{ $user->email }}</div>
-            <span class="profile-tag">Akun aktif</span>
-
-            {{-- Form hapus foto terpisah dari form informasi profil --}}
-            @if ($user->profile_photo)
-                <form class="profile-delete-photo-form"
-                      method="POST"
-                      action="{{ route('profile.photo.delete') }}"
-                      onsubmit="return confirm('Hapus foto profil dan kembalikan avatar ke huruf awal nama?');">
-                    @csrf
-                    @method('DELETE')
-
-                    <button type="submit" class="profile-button profile-button-danger">
-                        Hapus Foto Profil
-                    </button>
-                </form>
-            @endif
-        </div>
-
-        <div>
-            <div class="profile-card">
-                <h3>Informasi Profil</h3>
-                <p class="profile-description">Perbarui foto, nama, dan alamat email akun kamu.</p>
-
-                <form class="profile-form"
-                      id="profileForm"
-                      method="POST"
-                      action="{{ route('profile.update') }}"
-                      enctype="multipart/form-data">
-                    @csrf
-                    @method('PATCH')
-
-                    <input type="file"
-                           id="profile_photo"
-                           name="profile_photo"
-                           accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
-                           hidden>
-
-                    @error('profile_photo')
-                        <div class="profile-error">{{ $message }}</div>
-                    @enderror
-
-                    <label class="field-label" for="name">Nama Lengkap</label>
-                    <input type="text"
-                           id="name"
-                           name="name"
-                           value="{{ old('name', $user->name) }}"
-                           maxlength="255"
-                           required>
-
-                    @error('name')
-                        <div class="profile-error">{{ $message }}</div>
-                    @enderror
-
-                    <label class="field-label" for="email">Alamat Email</label>
-                    <input type="email"
-                           id="email"
-                           name="email"
-                           value="{{ old('email', $user->email) }}"
-                           maxlength="255"
-                           required>
-
-                    @error('email')
-                        <div class="profile-error">{{ $message }}</div>
-                    @enderror
-
-                    <button class="profile-button" type="submit">Simpan Perubahan</button>
-                </form>
-            </div>
-
-            <div class="profile-card">
-                <h3>Ubah Password</h3>
-                <p class="profile-description">Gunakan password saat ini untuk mengganti password akun.</p>
-
-                <form class="profile-form" method="POST" action="{{ route('password.update') }}">
-                    @csrf
-                    @method('PUT')
-
-                    <label class="field-label" for="current_password">Password Saat Ini</label>
-                    <input type="password" id="current_password" name="current_password"
-                           autocomplete="current-password" required>
-                    @foreach ($errors->get('current_password') as $error)
-                        <div class="profile-error">{{ $error }}</div>
-                    @endforeach
-
-                    <label class="field-label" for="password">Password Baru</label>
-                    <input type="password" id="password" name="password"
-                           autocomplete="new-password" required>
-                    @foreach ($errors->get('password') as $error)
-                        <div class="profile-error">{{ $error }}</div>
-                    @endforeach
-
-                    <label class="field-label" for="password_confirmation">Konfirmasi Password Baru</label>
-                    <input type="password" id="password_confirmation" name="password_confirmation"
-                           autocomplete="new-password" required>
-
-                    <button class="profile-button" type="submit">Perbarui Password</button>
-                </form>
-            </div>
-
-            <div class="profile-card profile-danger">
+            {{-- HAPUS AKUN TERPISAH DI BAWAH FOTO PROFIL --}}
+            <div class="profile-card profile-danger-card">
                 <h3>Hapus Akun</h3>
                 <p class="profile-description">
-                    Menghapus akun merupakan tindakan permanen. Pastikan kamu benar-benar ingin melanjutkan.
+                    Hapus akun Posting Sosmed jika kamu tidak ingin menggunakannya lagi.
                 </p>
+
+                <div class="profile-danger-note">
+                    Tindakan ini permanen dan dapat menghapus data akun kamu.
+                </div>
 
                 <form class="profile-form"
                       method="POST"
@@ -425,17 +462,149 @@
                     @csrf
                     @method('DELETE')
 
-                    <label class="field-label" for="delete_password">Konfirmasi Password</label>
-                    <input type="password" id="delete_password" name="password"
-                           autocomplete="current-password" required>
+                    <label class="field-label" for="delete_password">
+                        Konfirmasi Password
+                    </label>
+                    <input type="password"
+                           id="delete_password"
+                           name="password"
+                           autocomplete="current-password"
+                           required>
 
                     @foreach ($errors->get('userDeletion.password') as $error)
                         <div class="profile-error">{{ $error }}</div>
                     @endforeach
 
-                    <button class="profile-button" type="submit">Hapus Akun Saya</button>
+                    <button class="profile-button profile-button-danger" type="submit">
+                        Hapus Akun Saya
+                    </button>
                 </form>
             </div>
+
+        </div>
+
+        {{-- KOLOM KANAN: SATU KOTAK PENGATURAN --}}
+        <div class="profile-card profile-settings">
+
+            <div class="profile-settings-row">
+
+                {{-- FORM INFORMASI PROFIL --}}
+                <section class="profile-section">
+                    <h3>Informasi Profil</h3>
+                    <p class="profile-description">
+                        Perbarui nama dan alamat email akun kamu.
+                    </p>
+
+                    <form class="profile-form"
+                          id="profileForm"
+                          method="POST"
+                          action="{{ route('profile.update') }}"
+                          enctype="multipart/form-data">
+                        @csrf
+                        @method('PATCH')
+
+                        <input type="file"
+                               id="profile_photo"
+                               name="profile_photo"
+                               accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                               hidden>
+
+                        @error('profile_photo')
+                            <div class="profile-error">{{ $message }}</div>
+                        @enderror
+
+                        <label class="field-label" for="name">Nama Lengkap</label>
+                        <input type="text"
+                               id="name"
+                               name="name"
+                               value="{{ old('name', $user->name) }}"
+                               maxlength="255"
+                               required>
+
+                        @error('name')
+                            <div class="profile-error">{{ $message }}</div>
+                        @enderror
+
+                        <label class="field-label" for="email">Alamat Email</label>
+                        <input type="email"
+                               id="email"
+                               name="email"
+                               value="{{ old('email', $user->email) }}"
+                               maxlength="255"
+                               required>
+
+                        @error('email')
+                            <div class="profile-error">{{ $message }}</div>
+                        @enderror
+                    </form>
+                </section>
+
+                {{-- FORM UBAH PASSWORD --}}
+                <section class="profile-section">
+                    <h3>Ubah Password</h3>
+                    <p class="profile-description">
+                        Gunakan password saat ini untuk mengganti password akun.
+                    </p>
+
+                    <form class="profile-form"
+                          id="passwordForm"
+                          method="POST"
+                          action="{{ route('password.update') }}">
+                        @csrf
+                        @method('PUT')
+
+                        <label class="field-label" for="current_password">
+                            Password Saat Ini
+                        </label>
+                        <input type="password"
+                               id="current_password"
+                               name="current_password"
+                               autocomplete="current-password"
+                               required>
+
+                        @foreach ($errors->get('current_password') as $error)
+                            <div class="profile-error">{{ $error }}</div>
+                        @endforeach
+
+                        <label class="field-label" for="password">Password Baru</label>
+                        <input type="password"
+                               id="password"
+                               name="password"
+                               autocomplete="new-password"
+                               required>
+
+                        @foreach ($errors->get('password') as $error)
+                            <div class="profile-error">{{ $error }}</div>
+                        @endforeach
+
+                        <label class="field-label" for="password_confirmation">
+                            Konfirmasi Password Baru
+                        </label>
+                        <input type="password"
+                               id="password_confirmation"
+                               name="password_confirmation"
+                               autocomplete="new-password"
+                               required>
+                    </form>
+                </section>
+
+            </div>
+
+            {{-- KEDUA TOMBOL BERDAMPINGAN --}}
+            <div class="profile-actions">
+                <button class="profile-button"
+                        type="submit"
+                        form="profileForm">
+                    Simpan Perubahan
+                </button>
+
+                <button class="profile-button"
+                        type="submit"
+                        form="passwordForm">
+                    Perbarui Password
+                </button>
+            </div>
+
         </div>
     </div>
 </div>

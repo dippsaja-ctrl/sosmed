@@ -311,6 +311,316 @@
 
     {{-- CONTAINER ATURAN PLATFORM --}}
     <aside>
+        {{-- PANEL KANAN --}}
+<aside class="posting-sidebar">
+
+    {{-- ATURAN PLATFORM --}}
+    <section class="card posting-side-card">
+        <div class="posting-side-heading">
+            <span class="posting-side-icon">⚙</span>
+            <div>
+                <h3>Aturan Platform</h3>
+                <p class="muted sm">Ketentuan konten yang dipilih</p>
+            </div>
+        </div>
+
+        <div id="rules">
+            <p class="muted">
+                Pilih platform untuk melihat aturannya.
+            </p>
+        </div>
+
+        <p class="hint">
+            Server memeriksa ulang semua aturan ini saat Anda
+            menekan Periksa dan Pratinjau.
+        </p>
+    </section>
+
+    {{-- PANDUAN KONTEN --}}
+    <section class="card posting-side-card">
+        <div class="posting-side-heading">
+            <span class="posting-side-icon">✦</span>
+            <div>
+                <h3>Panduan Konten</h3>
+                <p class="muted sm">Tips sebelum memublikasikan</p>
+            </div>
+        </div>
+
+        <div class="posting-guide-list">
+            <div class="posting-guide-item">
+                <span class="posting-guide-number">01</span>
+                <div>
+                    <b>Pilih media yang sesuai</b>
+                    <p>Sesuaikan foto atau video dengan jenis konten.</p>
+                </div>
+            </div>
+
+            <div class="posting-guide-item">
+                <span class="posting-guide-number">02</span>
+                <div>
+                    <b>Buat caption yang menarik</b>
+                    <p>Gunakan tulisan yang jelas dan sesuai dengan konten.</p>
+                </div>
+            </div>
+
+            <div class="posting-guide-item">
+                <span class="posting-guide-number">03</span>
+                <div>
+                    <b>Periksa platform tujuan</b>
+                    <p>Pastikan akun sudah terhubung dan mendukung konten.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- RINGKASAN POSTING --}}
+    <section class="card posting-side-card posting-summary">
+        <div class="posting-side-heading">
+            <span class="posting-side-icon">▤</span>
+            <div>
+                <h3>Ringkasan Posting</h3>
+                <p class="muted sm">Periksa sebelum melanjutkan</p>
+            </div>
+        </div>
+
+        <div class="posting-summary-row">
+            <span>Jenis konten</span>
+            <b id="summaryType">Video / Reels</b>
+        </div>
+
+        <div class="posting-summary-row">
+            <span>Platform dipilih</span>
+            <b id="summaryPlatforms">0 platform</b>
+        </div>
+
+        <div class="posting-summary-row">
+            <span>Media</span>
+            <b id="summaryMedia">Belum dipilih</b>
+        </div>
+
+        <div class="posting-summary-row">
+            <span>Caption</span>
+            <b id="summaryCaption">Belum diisi</b>
+        </div>
+
+        <div class="posting-summary-note">
+            <span class="posting-summary-dot"></span>
+            <span id="summaryStatus">Lengkapi konten Anda untuk melanjutkan.</span>
+        </div>
+    </section>
+
+</aside>
+
+        <style>
+            .posting-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-width: 0;
+            align-self: stretch;
+        }
+
+            .posting-side-card {
+            min-width: 0;
+            margin: 0;
+            padding: 20px;
+            border: 1px solid #d7e0eb;
+            border-radius: 14px;
+            background: #fff;
+            box-shadow: 0 3px 12px rgba(17, 40, 70, .035);
+        }
+
+            .posting-side-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+            .posting-side-heading h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #102d4d;
+        }
+
+            .posting-side-heading p {
+            margin: 4px 0 0;
+        }
+
+            .posting-side-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border-radius: 11px;
+            background: #edf4fc;
+            color: #24598c;
+            font-size: 21px;
+        }
+
+            .posting-guide-list {
+            display: flex;
+            flex-direction: column;
+            gap: 17px;
+        }
+
+            .posting-guide-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+            .posting-guide-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: #edf4fc;
+            color: #24598c;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+            .posting-guide-item b {
+            display: block;
+            margin: 2px 0 5px;
+            color: #18334f;
+            font-size: 13px;
+        }
+
+            .posting-guide-item p {
+            margin: 0;
+            color: #718096;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+            .posting-summary {
+            background: linear-gradient(145deg, #fff 0%, #f7faff 100%);
+        }
+
+            .posting-summary-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #e8edf4;
+            font-size: 13px;
+        }
+
+            .posting-summary-row > span {
+            color: #718096;
+        }
+
+            .posting-summary-row > b {
+            color: #18334f;
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+            .posting-summary-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 9px;
+            background: #edf4fc;
+            color: #31577d;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+            .posting-summary-dot {
+            width: 8px;
+            height: 8px;
+            flex-shrink: 0;
+            margin-top: 5px;
+            border-radius: 50%;
+            background: #e9a23b;
+        }
+
+            .posting-summary-note.is-ready .posting-summary-dot {
+            background: #24a36a;
+        }
+
+        @media (max-width: 900px) {
+            .posting-sidebar {
+            margin-top: 0;
+        }
+    }
+    </style>
+
+    <script>
+    (function () {
+        const form = document.getElementById('postForm');
+
+        if (!form) return;
+
+        const typeLabels = {
+            video: 'Video / Reels',
+            carousel: 'Carousel',
+            photo: 'Foto'
+        };
+
+    function updatePostingSummary() {
+        const selectedType = form.querySelector('[name="type"]:checked');
+        const selectedPlatforms = [
+            ...form.querySelectorAll('[name="targets[]"]:checked')
+        ];
+
+        const mediaInput = document.getElementById('media');
+        const captionInput = document.getElementById('caption');
+
+        const mediaCount = mediaInput?.files?.length || 0;
+        const caption = captionInput?.value.trim() || '';
+
+        document.getElementById('summaryType').textContent =
+            typeLabels[selectedType?.value] || 'Belum dipilih';
+
+        document.getElementById('summaryPlatforms').textContent =
+            selectedPlatforms.length + ' platform';
+
+        document.getElementById('summaryMedia').textContent =
+            mediaCount > 0
+                ? mediaCount + ' file dipilih'
+                : 'Belum dipilih';
+
+        document.getElementById('summaryCaption').textContent =
+            caption ? 'Sudah diisi' : 'Belum diisi';
+
+        const status = document.getElementById('summaryStatus');
+        const note = status.closest('.posting-summary-note');
+
+        if (selectedPlatforms.length && mediaCount && caption) {
+            status.textContent = 'Konten sudah dilengkapi. Periksa kembali sebelum melanjutkan.';
+            note.classList.add('is-ready');
+        } else {
+            const missing = [];
+
+            if (!selectedPlatforms.length) missing.push('platform');
+            if (!mediaCount) missing.push('media');
+            if (!caption) missing.push('caption');
+
+            status.textContent =
+                'Lengkapi ' + missing.join(', ') + ' untuk melanjutkan.';
+
+            note.classList.remove('is-ready');
+        }
+    }
+
+    form.addEventListener('change', updatePostingSummary);
+    form.addEventListener('input', updatePostingSummary);
+
+    updatePostingSummary();
+})();
+</script>
         <section class="card">
             <h3>Aturan Platform</h3>
 

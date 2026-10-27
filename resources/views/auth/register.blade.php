@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Create Account - Posting Sosmed</title>
 
     <style>
@@ -71,10 +72,12 @@
             justify-content: center;
         }
 
-        .auth-logo svg {
+        .auth-logo img {
             display: block;
             width: 100%;
             height: 100%;
+            object-fit: contain;
+            object-position: center;
         }
 
         .auth-header {
@@ -299,60 +302,10 @@
 
             <header class="auth-header">
                 <div class="auth-logo">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         viewBox="0 0 160 130"
-                         role="img"
-                         aria-label="Burung merpati terbang">
-
-                        <g fill="#10396D">
-                            <!-- Sayap utama -->
-                            <path d="M78 72
-                            C60 55 35 25 36 5
-                            C53 23 72 39 88 54
-                            C82 35 82 19 91 8
-                            C99 29 108 44 115 57
-                            C119 42 128 33 138 31
-                            C133 48 128 61 119 72
-                            L103 91 L76 99Z"/>
-
-                            <!-- Tiga lapisan bulu sayap -->
-                            <path d="M77 70
-                            C54 61 29 46 13 27
-                            C19 49 41 69 68 81
-                            L86 88 L96 78Z"/>
-
-                            <path d="M76 76
-                            C54 73 34 65 20 53
-                            C30 73 49 86 73 91
-                            L92 91 L100 82Z"/>
-
-                            <path d="M79 82
-                            C60 88 43 88 29 83
-                            C43 100 61 103 83 98
-                            L101 89 L99 82Z"/>
-
-                            <!-- Badan dan leher -->
-                            <path d="M70 77
-                            C79 64 91 56 105 60
-                            C115 63 119 71 118 79
-                            C116 92 103 102 85 107
-                            C68 112 49 110 34 103
-                            C48 105 62 99 70 90
-                            C74 86 74 81 70 77Z"/>
-
-                            <!-- Kepala dan paruh -->
-                            <path d="M101 65
-                            C101 53 108 46 117 47
-                            C126 48 131 55 129 62
-                            L143 67 L128 70
-                            C124 77 114 79 107 74Z"/>
-
-                            <!-- Ekor -->
-                            <path d="M48 99
-                            L8 111 L40 104
-                            L18 121 L57 107Z"/>
-                        </g>
-                    </svg>
+                    <img
+                        src="{{ asset('images/logo.png') }}"
+                        alt="Logo Posting Sosmed"
+                    >
                 </div>
 
                 <h1>Create Account</h1>

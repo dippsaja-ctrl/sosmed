@@ -13,8 +13,9 @@
             </p>
         </div>
 
-        <a class="btn primary" href="{{ route('posts.create') }}">
-            Buat posting
+        <a href="{{ route('posts.create') }}" class="btn primary">
+    <span class="plus-icon">+</span>
+    Buat posting
         </a>
     </div>
 </section>

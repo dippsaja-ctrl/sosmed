@@ -4,7 +4,10 @@
 <div class="row" style="margin-bottom:16px">
     <div><h2>Halo, {{ auth()->user()->name }}</h2><p class="muted" style="margin:0">Ringkasan hal yang perlu Anda cek hari ini.</p></div>
     <span class="sp"></span>
-    <a class="btn primary" href="{{ route('posts.create') }}">Buat posting</a>
+    <a href="{{ route('posts.create') }}" class="btn primary">
+    <span style="font-size: 20px; font-weight: 400; line-height: 1;">+</span>
+    Buat posting
+</a>
 </div>
 
 <div class="grid2">

@@ -1,96 +1,65 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>Login - Posting Sosmed</title>
 
     <style>
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
         }
 
         body {
+            margin: 0;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 24px 16px;
-            background: linear-gradient(120deg, #050b16, #09172b 52%, #102d55);
-            color: #252b45;
-            position: relative;
-            overflow-x: hidden;
+            padding: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #050b16, #102d55);
+            color: #14233a;
         }
 
-        .decoration {
-            position: fixed;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-            background: rgba(67, 126, 201, .12);
-        }
-
-        .decoration.one {
-            width: 280px;
-            height: 280px;
-            top: -120px;
-            left: -100px;
-        }
-
-        .decoration.two {
-            width: 330px;
-            height: 330px;
-            right: -110px;
-            bottom: -180px;
-        }
-
-        .auth-container {
-            position: relative;
-            z-index: 1;
+        .login-card {
             width: 100%;
             max-width: 400px;
-        }
-
-        .auth-card {
-            padding: 27px 29px;
-            border-radius: 20px;
+            padding: 28px;
             background: #f7f9ff;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, .18);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
         }
 
-        .auth-logo {
-            width: 100px;
-            height: 78px;
-            margin: 0 auto 10px;
+        .login-logo {
             display: flex;
             align-items: center;
             justify-content: center;
+            margin: 0 auto 10px;
         }
 
-        .auth-logo svg {
+        .login-logo img {
             display: block;
-            width: 100%;
-            height: 100%;
+            width: 100px;
+            height: 85px;
+            object-fit: contain;
+            object-position: center;
         }
 
-        .auth-header {
+        h1 {
+            margin: 8px 0;
             text-align: center;
-            margin-bottom: 22px;
-        }
-
-        .auth-header h1 {
             font-size: 25px;
-            margin-bottom: 8px;
-            color: #252941;
+            color: #102d55;
         }
 
-        .auth-header p {
-            font-size: 12px;
-            color: #7888a8;
+        .subtitle {
+            margin: 8px 0 24px;
+            text-align: center;
+            color: #71809a;
+            font-size: 13px;
             line-height: 1.7;
         }
 
@@ -100,31 +69,26 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 7px;
-            color: #303955;
+            margin-bottom: 8px;
             font-size: 13px;
             font-weight: 600;
         }
 
         .form-group input {
             width: 100%;
-            height: 42px;
+            height: 43px;
             padding: 0 13px;
-            border: 1px solid #d9e1f0;
-            border-radius: 9px;
-            background: #fff;
-            color: #252b45;
-            font-size: 13px;
+            border: 1px solid #d4deef;
+            border-radius: 10px;
             outline: none;
+            background: #fff;
+            color: #14233a;
+            font-size: 13px;
         }
 
         .form-group input:focus {
-            border-color: #5788d3;
-            box-shadow: 0 0 0 3px rgba(87, 136, 211, .13);
-        }
-
-        .form-group input::placeholder {
-            color: #9aa9c3;
+            border-color: #5686d5;
+            box-shadow: 0 0 0 3px rgba(86, 134, 213, 0.12);
         }
 
         .password-wrapper {
@@ -132,52 +96,59 @@
         }
 
         .password-wrapper input {
-            padding-right: 45px;
+            padding-right: 48px;
         }
 
         .toggle-password {
             position: absolute;
-            right: 8px;
             top: 50%;
+            right: 12px;
             transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            padding: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 30px;
-            height: 30px;
             border: none;
+            border-radius: 6px;
             background: transparent;
-            color: #71809b;
+            color: #71809a;
             cursor: pointer;
         }
 
+        .toggle-password:hover {
+            color: #4168b7;
+            background: #edf3ff;
+        }
+
         .toggle-password svg {
-            width: 20px;
-            height: 20px;
+            width: 21px;
+            height: 21px;
+            display: block;
         }
 
         .form-options {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             gap: 10px;
-            margin: 2px 0 17px;
+            margin: 3px 0 18px;
             font-size: 11px;
-            color: #77839b;
         }
 
         .remember {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
 
         .remember input {
-            accent-color: #4779c5;
+            margin: 0;
         }
 
         a {
-            color: #3264b8;
+            color: #1556bd;
             text-decoration: none;
         }
 
@@ -185,298 +156,236 @@
             text-decoration: underline;
         }
 
-        .submit-button {
+        .login-button {
+            display: block;
             width: 100%;
-            height: 42px;
+            height: 43px;
             border: none;
-            border-radius: 9px;
-            background: linear-gradient(100deg, #568bd8, #416bb5);
+            border-radius: 10px;
+            background: linear-gradient(100deg, #5688db, #4168b7);
             color: white;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
             cursor: pointer;
+            transition: opacity 0.2s;
         }
 
-        .submit-button:hover {
-            background: linear-gradient(100deg, #477bc6, #345ba0);
-        }
-
-        .message {
-            padding: 10px 12px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            font-size: 12px;
-            line-height: 1.6;
-            overflow-wrap: anywhere;
-        }
-
-        .error-message {
-            color: #b42332;
-            background: #fff0f0;
-            border: 1px solid #f0cccc;
-        }
-
-        .success-message {
-            color: #237545;
-            background: #e7f7ed;
-            border: 1px solid #c4ebd1;
-        }
-
-        .message ul {
-            padding-left: 18px;
+        .login-button:hover {
+            opacity: 0.9;
         }
 
         .divider {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin: 19px 0 16px;
-            color: #8994ac;
+            margin: 19px 0;
+            color: #71809a;
             font-size: 11px;
         }
 
         .divider::before,
         .divider::after {
             content: "";
-            height: 1px;
             flex: 1;
-            background: #e0e5ef;
+            height: 1px;
+            background: #dce3ef;
         }
 
-        .register-link {
-            margin-top: 19px;
+        .register-text {
+            margin: 0;
             text-align: center;
             font-size: 12px;
-            color: #7c879f;
+            color: #71809a;
         }
 
-        .register-link a {
-            font-weight: 600;
-        }
-
-        .footer-links {
+        .legal-links {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 9px;
-            border-top: 1px solid #e0e5ef;
-            margin-top: 19px;
-            padding-top: 14px;
+            gap: 8px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #dce3ef;
             font-size: 10px;
         }
 
-        .footer-links span {
-            color: #a4aec1;
+        .error-message {
+            margin: 0 0 14px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: #fff0f0;
+            color: #b42318;
+            font-size: 12px;
         }
 
-        @media (max-width: 480px) {
-            .auth-card {
-                padding: 25px 22px;
+        @media (max-width: 420px) {
+            .login-card {
+                padding: 24px 20px;
             }
 
-            .auth-logo {
-                width: 88px;
-                height: 70px;
+            .login-logo img {
+                width: 90px;
+                height: 78px;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="decoration one"></div>
-    <div class="decoration two"></div>
+    <main class="login-card">
 
-    <main class="auth-container">
-        <section class="auth-card">
+        <div class="login-logo">
+            <img
+                src="{{ asset('images/logo.png') }}"
+                alt="Logo Posting Sosmed"
+            >
+        </div>
 
-            <header class="auth-header">
-                <div class="auth-logo">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         viewBox="0 0 160 130"
-                         role="img"
-                         aria-label="Burung merpati terbang">
+        <h1>Welcome Back</h1>
 
-                        <g fill="#10396D">
-                            <!-- Sayap utama -->
-                            <path d="M78 72
-                            C60 55 35 25 36 5
-                            C53 23 72 39 88 54
-                            C82 35 82 19 91 8
-                            C99 29 108 44 115 57
-                            C119 42 128 33 138 31
-                            C133 48 128 61 119 72
-                            L103 91 L76 99Z"/>
+        <p class="subtitle">
+            Lanjutkan perjalananmu.<br>
+            Jalanmu sudah menunggu.
+        </p>
 
-                            <!-- Tiga lapisan bulu sayap -->
-                            <path d="M77 70
-                            C54 61 29 46 13 27
-                            C19 49 41 69 68 81
-                            L86 88 L96 78Z"/>
+        @if ($errors->any())
+            <div class="error-message">
+                @foreach ($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
+            </div>
+        @endif
 
-                            <path d="M76 76
-                            C54 73 34 65 20 53
-                            C30 73 49 86 73 91
-                            L92 91 L100 82Z"/>
+        <form method="POST" action="{{ route('login') }}">
+            @csrf
 
-                            <path d="M79 82
-                            C60 88 43 88 29 83
-                            C43 100 61 103 83 98
-                            L101 89 L99 82Z"/>
+            <div class="form-group">
+                <label for="email">Email</label>
 
-                            <!-- Badan dan leher -->
-                            <path d="M70 77
-                            C79 64 91 56 105 60
-                            C115 63 119 71 118 79
-                            C116 92 103 102 85 107
-                            C68 112 49 110 34 103
-                            C48 105 62 99 70 90
-                            C74 86 74 81 70 77Z"/>
-
-                            <!-- Kepala dan paruh -->
-                            <path d="M101 65
-                            C101 53 108 46 117 47
-                            C126 48 131 55 129 62
-                            L143 67 L128 70
-                            C124 77 114 79 107 74Z"/>
-
-                            <!-- Ekor -->
-                            <path d="M48 99
-                            L8 111 L40 104
-                            L18 121 L57 107Z"/>
-                        </g>
-                    </svg>
-                </div>
-
-                <h1>Welcome Back</h1>
-                <p>
-                    Lanjutkan perjalananmu.
-                    <br>
-                    Jalanmu sudah menunggu.
-                </p>
-            </header>
-
-            @if (session('status'))
-                <div class="message success-message">
-                    {{ session('status') }}
-                </div>
-            @endif
-
-            @if ($errors->any())
-                <div class="message error-message">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            <form method="POST" action="{{ route('login') }}">
-                @csrf
-
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input
-                        id="email"
-                        type="email"
-                        name="email"
-                        value="{{ old('email') }}"
-                        placeholder="nama@gmail.com"
-                        autocomplete="username"
-                        required
-                        autofocus
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-
-                    <div class="password-wrapper">
-                        <input
-                            id="password"
-                            type="password"
-                            name="password"
-                            placeholder="Masukkan password"
-                            autocomplete="current-password"
-                            required
-                        >
-
-                        <button type="button"
-                                class="toggle-password"
-                                aria-label="Tampilkan password"
-                                aria-pressed="false"
-                                onclick="togglePassword('password', this)">
-                            <svg viewBox="0 0 24 24" fill="none"
-                                 stroke="currentColor" stroke-width="1.8"
-                                 stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
-                                <circle cx="12" cy="12" r="3"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-options">
-                    <label class="remember">
-                        <input type="checkbox" name="remember" value="1">
-                        <span>Remember me</span>
-                    </label>
-
-                    <a href="{{ route('password.request') }}">
-                        Forgot password?
-                    </a>
-                </div>
-
-                <button type="submit" class="submit-button">
-                    LOG IN
-                </button>
-            </form>
-
-            <div class="divider">Login with</div>
-
-            <div class="register-link">
-                Belum punya akun?
-                <a href="{{ route('register') }}">Create account</a>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="{{ old('email') }}"
+                    placeholder="nama@gmail.com"
+                    autocomplete="email"
+                    required
+                    autofocus
+                >
             </div>
 
-            <footer class="footer-links">
-                <a href="{{ url('/privacy-policy') }}">Kebijakan Privasi</a>
-                <span>-</span>
-                <a href="{{ url('/terms-of-service') }}">Ketentuan Layanan</a>
-            </footer>
+            <div class="form-group">
+                <label for="password">Password</label>
 
-        </section>
+                <div class="password-wrapper">
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Masukkan password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        onclick="togglePassword()"
+                        aria-label="Tampilkan password"
+                        title="Tampilkan password"
+                    >
+                        <svg
+                            id="eyeIcon"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-options">
+                <label class="remember">
+                    <input
+                        type="checkbox"
+                        name="remember"
+                        value="1"
+                    >
+                    <span>Remember me</span>
+                </label>
+
+                <a href="{{ route('password.request') }}">
+                    Forgot password?
+                </a>
+            </div>
+
+            <button type="submit" class="login-button">
+                LOG IN
+            </button>
+        </form>
+
+        <div class="divider">Login with</div>
+
+        <p class="register-text">
+            Belum punya akun?
+            <a href="{{ route('register') }}">
+                <strong>Create account</strong>
+            </a>
+        </p>
+
+        <div class="legal-links">
+            <a href="{{ route('legal.privacy') }}">
+                Kebijakan Privasi
+            </a>
+
+            <span>-</span>
+
+            <a href="{{ route('legal.terms') }}">
+                Ketentuan Layanan
+            </a>
+        </div>
+
     </main>
 
     <script>
-        function togglePassword(inputId, button) {
-            const input = document.getElementById(inputId);
-            const visible = input.type === 'password';
+        function togglePassword() {
+            const password = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            const button = document.querySelector('.toggle-password');
 
-            input.type = visible ? 'text' : 'password';
-            button.setAttribute('aria-pressed', String(visible));
-            button.setAttribute(
-                'aria-label',
-                visible ? 'Sembunyikan password' : 'Tampilkan password'
-            );
+            if (password.type === 'password') {
+                password.type = 'text';
 
-            button.innerHTML = visible
-                ? `<svg viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="1.8"
-                    stroke-linecap="round" stroke-linejoin="round">
+                eyeIcon.innerHTML = `
                     <path d="M3 3l18 18"/>
                     <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/>
                     <path d="M9.9 5.2A10.8 10.8 0 0 1 12 5
-                    c6.4 0 10 7 10 7a16 16 0 0 1-3.1 3.9"/>
-                    <path d="M6.2 6.2C3.5 8 2 12 2 12
-                    s3.6 7 10 7c1.2 0 2.3-.2 3.3-.6"/>
-                    </svg>`
-                : `<svg viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="1.8"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
+                    c6.4 0 10 7 10 7a15.8 15.8 0 0 1-3 3.8"/>
+                    <path d="M6.6 6.6C3.7 8.5 2 12 2 12
+                    s3.6 7 10 7a10.8 10.8 0 0 0 4-.8"/>
+                `;
+
+                button.setAttribute('aria-label', 'Sembunyikan password');
+                button.setAttribute('title', 'Sembunyikan password');
+            } else {
+                password.type = 'password';
+
+                eyeIcon.innerHTML = `
+                    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/>
                     <circle cx="12" cy="12" r="3"/>
-                    </svg>`;
+                `;
+
+                button.setAttribute('aria-label', 'Tampilkan password');
+                button.setAttribute('title', 'Tampilkan password');
+            }
         }
     </script>
 </body>
