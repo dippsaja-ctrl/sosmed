@@ -23,8 +23,8 @@ class Post extends Model
     protected function casts(): array
     {
         return [
-            'yt_meta'      => 'array',
-            'media'        => 'array',
+            'yt_meta' => 'array',
+            'media' => 'array',
             'scheduled_at' => 'datetime',
         ];
     }
@@ -65,19 +65,6 @@ class Post extends Model
             ?: ($this->yt_meta['title'] ?? '(tanpa caption)');
     }
 
-    public function media(): HasMany
-    {
-        return $this->hasMany(PostMedia::class)
-            ->orderBy('position');
-    }
-
-    public function deliveries(): HasMany
-    {
-        return $this->hasMany(PostDelivery::class);
-    }
-
-    /** @return array{0:string,1:string} [label, kelas css] */
-
     public function histories(): HasMany
     {
         return $this->hasMany(PostHistory::class);
@@ -88,7 +75,6 @@ class Post extends Model
      *
      * @return array{0:string,1:string}
      */
-
     public function overall(): array
     {
         if ($this->state === 'canceled') {

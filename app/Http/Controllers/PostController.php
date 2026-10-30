@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Jobs\PublishToPlatform;
 use App\Models\Post;
 use App\Models\SocialAccount;
-use App\Models\ScheduledPost;
 use App\Support\PostValidator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -233,11 +232,6 @@ class PostController extends Controller
                 'state' => 'scheduled',
             ]);
 
-            ScheduledPost::updateOrCreate(
-                ['post_id' => $post->id],
-                ['scheduled_at' => $post->scheduled_at, 'status' => 'pending', 'last_error' => null]
-            );
-
             return redirect()
                 ->route('schedule.index')
                 ->with('ok', 'Posting dijadwalkan dan akan terbit otomatis.');
@@ -394,10 +388,6 @@ class PostController extends Controller
                 'yt_meta'      => $youtube,
             ]);
 
-            ScheduledPost::where('post_id', $post->id)
-                ->where('status', 'pending')
-                ->update(['scheduled_at' => Carbon::parse($data['scheduled_at'])]);
-
             // Hapus target yang tidak lagi dipilih.
             $post->targets()
                 ->whereNotIn('platform', $data['targets'])
@@ -434,10 +424,6 @@ class PostController extends Controller
             $post->targets()->update([
                 'status' => 'canceled',
             ]);
-
-            ScheduledPost::where('post_id', $post->id)
-                ->where('status', 'pending')
-                ->update(['status' => 'canceled']);
         });
 
         return redirect()

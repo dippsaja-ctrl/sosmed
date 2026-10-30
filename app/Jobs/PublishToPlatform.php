@@ -4,8 +4,8 @@ namespace App\Jobs;
 
 use App\Exceptions\PublishException;
 use App\Models\Post;
-use App\Models\PostTarget;
 use App\Models\PostHistory;
+use App\Models\PostTarget;
 use App\Models\SocialAccount;
 use App\Notifications\AppNotice;
 use App\Services\Platforms\PlatformManager;
@@ -25,6 +25,7 @@ class PublishToPlatform implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 3;
+
     public int $timeout = 1800;
 
     public function __construct(public PostTarget $target, int $maxTries = 3)
@@ -45,9 +46,9 @@ class PublishToPlatform implements ShouldQueue
         }
 
         $target->update([
-            'status'   => $this->attempts() > 1 ? 'retrying' : 'sending',
+            'status' => $this->attempts() > 1 ? 'retrying' : 'sending',
             'attempts' => $this->attempts(),
-            'error'    => null,
+            'error' => null,
         ]);
 
         try {
@@ -69,11 +70,11 @@ class PublishToPlatform implements ShouldQueue
             $result = $client->publish($target->post, $account);
 
             $target->update([
-                'status'       => 'success',
+                'status' => 'success',
                 'external_url' => $result['url'] ?? null,
-                'note'         => $result['note'] ?? null,
+                'note' => $result['note'] ?? null,
                 'published_at' => now(),
-                'error'        => null,
+                'error' => null,
             ]);
 
             // Catat ke riwayat. Kegagalan mencatat log tidak boleh membuat posting dianggap gagal.
@@ -89,6 +90,7 @@ class PublishToPlatform implements ShouldQueue
 
             if ($e instanceof PublishException && ! $e->retryable) {
                 $this->fail($e);           // kesalahan permanen: jangan diulang
+
                 return;
             }
             if ($this->attempts() < $this->tries) {
@@ -102,7 +104,9 @@ class PublishToPlatform implements ShouldQueue
     public function failed(Throwable $e): void
     {
         $target = PostTarget::with('post')->find($this->target->id);
-        if (! $target) return;
+        if (! $target) {
+            return;
+        }
 
         $target->update(['status' => 'failed', 'error' => mb_substr($e->getMessage(), 0, 1000)]);
 
@@ -135,4 +139,4 @@ class PublishToPlatform implements ShouldQueue
             $bad->isEmpty() ? "Posting $name terbit di semua platform." : "Posting $name gagal di ".$bad->implode(', ').'. Buka Riwayat untuk mencoba lagi.'
         ));
     }
-
+}

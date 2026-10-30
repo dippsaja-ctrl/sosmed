@@ -14,10 +14,9 @@ class DispatchDuePosts extends Command
     public function handle(): int
     {
         $count = 0;
-        Post::with('targets')->where('state', 'scheduled')->where('scheduled_at', '<=', now())
-
-            ->eachById(function (Post $post) use (&$count) {
-
+        Post::with('targets')
+            ->where('state', 'scheduled')
+            ->where('scheduled_at', '<=', now())
             ->each(function (Post $post) use (&$count) {
 
                 // update atomik supaya tidak terkirim dua kali bila scheduler tumpang tindih

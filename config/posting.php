@@ -30,7 +30,7 @@ return [
         ],
         'tiktok' => [
             'label' => 'TikTok', 'short' => 'TT', 'color' => '#0E2A33',
-            'client_id' => env('TIKTOK_CLIENT_KEY'),
+            'client_id' => env('TIKTOK_CLIENT_ID'),
             'client_secret' => env('TIKTOK_CLIENT_SECRET'),
             'types' => ['video' => 'Video', 'carousel' => 'Foto carousel'],
             'caption_max' => 2200, 'photo_mb' => 20, 'video_mb' => 500,

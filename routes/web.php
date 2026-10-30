@@ -10,9 +10,21 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\SocialAccountController;
 use App\Http\Controllers\SocialAuthController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schedule;
 
+Route::get('/tiktok-test', function (Request $request) {
+    $res = Http::asForm()->post('https://open.tiktokapis.com/v2/oauth/token/', [
+        'client_key' => env('TIKTOK_CLIENT_ID'),
+        'client_secret' => env('TIKTOK_CLIENT_SECRET'),
+        'code' => $request->query('code'),
+        'grant_type' => 'authorization_code',
+        'redirect_uri' => 'https://depth-constrain-hangover.ngrok-free.dev/tiktok-test',
+    ]);
+    dd($res->json());
+});
 /*
 |--------------------------------------------------------------------------
 | Halaman Utama & Publik
@@ -151,6 +163,7 @@ Route::middleware('auth')->group(function () {
     */
     Route::post('/notifikasi/baca', function () {
         auth()->user()->unreadNotifications->markAsRead();
+
         return back();
     })->name('notifications.read');
 

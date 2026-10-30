@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('social_accounts', function (Blueprint $table) {
-            //
-        });
+        if (! Schema::hasColumn('social_accounts', 'meta')) {
+            Schema::table('social_accounts', function (Blueprint $table) {
+                $table->json('meta')->nullable()->after('needs_reauth');
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('social_accounts', function (Blueprint $table) {
-            //
-        });
+        if (Schema::hasColumn('social_accounts', 'meta')) {
+            Schema::table('social_accounts', function (Blueprint $table) {
+                $table->dropColumn('meta');
+            });
+        }
     }
 };
