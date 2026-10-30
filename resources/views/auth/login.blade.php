@@ -1,307 +1,252 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>Login - Posting Sosmed</title>
 
     <style>
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
         }
 
         body {
+            margin: 0;
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 25px 15px;
-            position: relative;
-            overflow-x: hidden;
-            background: linear-gradient(120deg, #061020, #10294b);
-        }
-
-        body::before,
-        body::after {
-            content: "";
-            position: fixed;
-            width: 280px;
-            height: 280px;
-            border-radius: 50%;
-            background: rgba(55, 91, 145, 0.18);
-            pointer-events: none;
-        }
-
-        body::before {
-            top: -120px;
-            left: -100px;
-        }
-
-        body::after {
-            bottom: -130px;
-            right: -60px;
-            width: 280px;
-            height: 280px;
+            justify-content: center;
+            padding: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #050b16, #102d55);
+            color: #14233a;
         }
 
         .login-card {
-            position: relative;
-            z-index: 1;
             width: 100%;
             max-width: 400px;
-            padding: 18px 29px 20px;
-            background: #f8faff;
+            padding: 28px;
+            background: #f7f9ff;
             border-radius: 20px;
-            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
         }
 
-        .login-header {
+        .login-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+        }
+
+        .login-logo img {
+            display: block;
+            width: 100px;
+            height: 85px;
+            object-fit: contain;
+            object-position: center;
+        }
+
+        h1 {
+            margin: 8px 0;
             text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .login-header h1 {
-            color: #24283f;
             font-size: 25px;
-            font-weight: 700;
-            margin-bottom: 8px;
+            color: #102d55;
         }
 
-        .login-header p {
-            color: #8290aa;
-            font-size: 11px;
-            line-height: 1.5;
+        .subtitle {
+            margin: 8px 0 24px;
+            text-align: center;
+            color: #71809a;
+            font-size: 13px;
+            line-height: 1.7;
         }
 
         .form-group {
-            margin-bottom: 9px;
+            margin-bottom: 15px;
         }
 
         .form-group label {
             display: block;
-            color: #34415d;
+            margin-bottom: 8px;
             font-size: 13px;
             font-weight: 600;
-            margin-bottom: 6px;
         }
 
         .form-group input {
             width: 100%;
-            height: 38px;
+            height: 43px;
             padding: 0 13px;
-            border: 1px solid #dce3ef;
-            border-radius: 8px;
+            border: 1px solid #d4deef;
+            border-radius: 10px;
             outline: none;
             background: #fff;
-            color: #29334b;
-            font-size: 12px;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            color: #14233a;
+            font-size: 13px;
         }
 
         .form-group input:focus {
-            border-color: #5486cf;
-            box-shadow: 0 0 0 3px rgba(84, 134, 207, 0.12);
+            border-color: #5686d5;
+            box-shadow: 0 0 0 3px rgba(86, 134, 213, 0.12);
         }
 
-        .form-group input::placeholder {
-            color: #a0aec4;
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 48px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            color: #71809a;
+            cursor: pointer;
+        }
+
+        .toggle-password:hover {
+            color: #4168b7;
+            background: #edf3ff;
+        }
+
+        .toggle-password svg {
+            width: 21px;
+            height: 21px;
+            display: block;
         }
 
         .form-options {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            gap: 8px;
-            margin: 10px 0 13px;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 3px 0 18px;
             font-size: 11px;
         }
 
         .remember {
             display: flex;
             align-items: center;
-            gap: 6px;
-            color: #71809a;
+            gap: 5px;
         }
 
         .remember input {
-            accent-color: #4775bd;
+            margin: 0;
         }
 
-        .form-options a,
-        .register-text a {
-            color: #3265b7;
+        a {
+            color: #1556bd;
             text-decoration: none;
         }
 
-        .form-options a:hover,
-        .register-text a:hover {
+        a:hover {
             text-decoration: underline;
         }
 
         .login-button {
+            display: block;
             width: 100%;
-            height: 39px;
+            height: 43px;
             border: none;
-            border-radius: 9px;
-            background: linear-gradient(100deg, #588bd5, #416bb3);
+            border-radius: 10px;
+            background: linear-gradient(100deg, #5688db, #4168b7);
             color: white;
-            font-size: 12px;
-            font-weight: bold;
+            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
-            transition: opacity 0.2s, transform 0.2s;
+            transition: opacity 0.2s;
         }
 
         .login-button:hover {
-            opacity: 0.92;
-            transform: translateY(-1px);
-        }
-
-        .login-button:disabled {
-            opacity: 0.65;
-            cursor: not-allowed;
-        }
-
-        .error-message {
-            padding: 9px 11px;
-            margin-bottom: 12px;
-            border: 1px solid #f1c6c6;
-            border-radius: 7px;
-            background: #fff0f0;
-            color: #b42318;
-            font-size: 12px;
-            line-height: 1.5;
-        }
-
-        .success-message {
-            padding: 9px 11px;
-            margin-bottom: 12px;
-            border: 1px solid #b8e2c5;
-            border-radius: 7px;
-            background: #effbf2;
-            color: #21713b;
-            font-size: 12px;
+            opacity: 0.9;
         }
 
         .divider {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin: 12px 0 14px;
-            color: #8491a8;
-            font-size: 12px;
+            margin: 19px 0;
+            color: #71809a;
+            font-size: 11px;
         }
 
         .divider::before,
         .divider::after {
             content: "";
-            height: 1px;
             flex: 1;
-            background: #dfe5ef;
-        }
-
-        .social-login {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 48px;
-            margin-bottom: 16px;
-        }
-
-        .social-login a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 22px;
-            height: 24px;
-            color: #70819d;
-            text-decoration: none;
-            font-size: 23px;
-            font-weight: bold;
-            transition: color 0.2s, transform 0.2s;
-        }
-
-        .social-login a:hover {
-            color: #416fba;
-            transform: translateY(-2px);
-        }
-
-        .social-login .music-icon {
-            font-size: 21px;
+            height: 1px;
+            background: #dce3ef;
         }
 
         .register-text {
+            margin: 0;
             text-align: center;
-            color: #7d8aa1;
             font-size: 12px;
-            margin-bottom: 0;
-        }
-
-        .register-text a {
-            font-weight: 600;
+            color: #71809a;
         }
 
         .legal-links {
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
-            align-items: center;
+            flex-wrap: wrap;
             gap: 8px;
-            margin-top: 15px;
-            padding-top: 12px;
-            border-top: 1px solid #e1e7f1;
-            color: #9aa5b8;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #dce3ef;
             font-size: 10px;
         }
 
-        .legal-links a {
-            color: #5278b8;
-            text-decoration: none;
+        .error-message {
+            margin: 0 0 14px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: #fff0f0;
+            color: #b42318;
+            font-size: 12px;
         }
 
-        .legal-links a:hover {
-            color: #244f98;
-            text-decoration: underline;
-        }
-
-        @media (max-width: 480px) {
+        @media (max-width: 420px) {
             .login-card {
-                max-width: 400px;
-                padding: 24px 22px;
-                border-radius: 17px;
+                padding: 24px 20px;
             }
 
-            .login-header h1 {
-                font-size: 23px;
-            }
-
-            .social-login {
-                gap: 40px;
+            .login-logo img {
+                width: 90px;
+                height: 78px;
             }
         }
     </style>
 </head>
 
 <body>
+    <main class="login-card">
 
-    <div class="login-card">
-
-        <div class="login-header">
-            <h1>Welcome Back</h1>
-            <p>
-                Lanjutkan perjalananmu.<br>
-                Jalanmu sudah menunggu.
-            </p>
+        <div class="login-logo">
+            <img
+                src="{{ asset('images/logo.png') }}"
+                alt="Logo Posting Sosmed"
+            >
         </div>
 
-        @if (session('status'))
-            <div class="success-message">
-                {{ session('status') }}
-            </div>
-        @endif
+        <h1>Welcome Back</h1>
+
+        <p class="subtitle">
+            Lanjutkan perjalananmu.<br>
+            Jalanmu sudah menunggu.
+        </p>
 
         @if ($errors->any())
             <div class="error-message">
@@ -316,6 +261,7 @@
 
             <div class="form-group">
                 <label for="email">Email</label>
+
                 <input
                     type="email"
                     id="email"
@@ -330,27 +276,55 @@
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Masukkan password"
-                    autocomplete="current-password"
-                    required
-                >
+
+                <div class="password-wrapper">
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Masukkan password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        onclick="togglePassword()"
+                        aria-label="Tampilkan password"
+                        title="Tampilkan password"
+                    >
+                        <svg
+                            id="eyeIcon"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             <div class="form-options">
                 <label class="remember">
-                    <input type="checkbox" name="remember" value="1">
+                    <input
+                        type="checkbox"
+                        name="remember"
+                        value="1"
+                    >
                     <span>Remember me</span>
                 </label>
 
-                @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}">
-                        Forgot password?
-                    </a>
-                @endif
+                <a href="{{ route('password.request') }}">
+                    Forgot password?
+                </a>
             </div>
 
             <button type="submit" class="login-button">
@@ -358,30 +332,61 @@
             </button>
         </form>
 
-        <div class="divider">
-            <span>Login with</span>
-        </div>
-
-        <div class="social-login">
-            <a href="{{ url('/auth/facebook') }}" aria-label="Login dengan Facebook">f</a>
-            <a href="{{ url('/auth/google') }}" aria-label="Login dengan Google">G</a>
-            <a href="{{ url('/auth/tiktok') }}" class="music-icon" aria-label="Login dengan TikTok">【ᕷ】</a>
-        </div>
+        <div class="divider">Login with</div>
 
         <p class="register-text">
             Belum punya akun?
-            <a href="{{ Route::has('register') ? route('register') : url('/register') }}">
-                Create account
+            <a href="{{ route('register') }}">
+                <strong>Create account</strong>
             </a>
         </p>
 
         <div class="legal-links">
-            <a href="{{ url('/privacy-policy') }}">Kebijakan Privasi</a>
-            <span>•</span>
-            <a href="{{ url('/terms-of-service') }}">Ketentuan Layanan</a>
+            <a href="{{ route('legal.privacy') }}">
+                Kebijakan Privasi
+            </a>
+
+            <span>-</span>
+
+            <a href="{{ route('legal.terms') }}">
+                Ketentuan Layanan
+            </a>
         </div>
 
-    </div>
+    </main>
 
+    <script>
+        function togglePassword() {
+            const password = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            const button = document.querySelector('.toggle-password');
+
+            if (password.type === 'password') {
+                password.type = 'text';
+
+                eyeIcon.innerHTML = `
+                    <path d="M3 3l18 18"/>
+                    <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/>
+                    <path d="M9.9 5.2A10.8 10.8 0 0 1 12 5
+                    c6.4 0 10 7 10 7a15.8 15.8 0 0 1-3 3.8"/>
+                    <path d="M6.6 6.6C3.7 8.5 2 12 2 12
+                    s3.6 7 10 7a10.8 10.8 0 0 0 4-.8"/>
+                `;
+
+                button.setAttribute('aria-label', 'Sembunyikan password');
+                button.setAttribute('title', 'Sembunyikan password');
+            } else {
+                password.type = 'password';
+
+                eyeIcon.innerHTML = `
+                    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                `;
+
+                button.setAttribute('aria-label', 'Tampilkan password');
+                button.setAttribute('title', 'Tampilkan password');
+            }
+        }
+    </script>
 </body>
 </html>

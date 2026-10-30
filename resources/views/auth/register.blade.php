@@ -4,227 +4,289 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Create Account - Posting Sosmed</title>
 
     <style>
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
             font-family: Arial, Helvetica, sans-serif;
         }
 
         body {
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 25px 15px;
+            justify-content: center;
+            padding: 24px 16px;
+            background: linear-gradient(120deg, #050b16, #09172b 52%, #102d55);
+            color: #252b45;
             position: relative;
             overflow-x: hidden;
-            background: linear-gradient(120deg, #061020, #10294b);
         }
 
-        body::before,
-        body::after {
-            content: "";
+        .decoration {
             position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            background: rgba(67, 126, 201, .12);
+        }
+
+        .decoration.one {
             width: 280px;
             height: 280px;
-            border-radius: 50%;
-            background: rgba(55, 91, 145, 0.18);
-            pointer-events: none;
-        }
-
-        body::before {
             top: -120px;
             left: -100px;
         }
 
-        body::after {
-            bottom: -130px;
-            right: -60px;
+        .decoration.two {
+            width: 330px;
+            height: 330px;
+            right: -110px;
+            bottom: -180px;
         }
 
-        .register-card {
+        .auth-container {
             position: relative;
             z-index: 1;
             width: 100%;
             max-width: 420px;
-            padding: 27px 30px 22px;
-            background: #f8faff;
-            border-radius: 20px;
-            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.12);
         }
 
-        .register-header {
+        .auth-card {
+            padding: 24px 30px 23px;
+            border-radius: 20px;
+            background: #f7f9ff;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, .18);
+        }
+
+        .auth-logo {
+            width: 90px;
+            height: 70px;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-logo img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+        }
+
+        .auth-header {
             text-align: center;
             margin-bottom: 20px;
         }
 
-        .register-header h1 {
-            color: #24283f;
+        .auth-header h1 {
             font-size: 25px;
-            font-weight: 700;
             margin-bottom: 8px;
+            color: #252941;
         }
 
-        .register-header p {
-            color: #8290aa;
+        .auth-header p {
             font-size: 12px;
-            line-height: 1.6;
+            color: #7888a8;
+            line-height: 1.7;
         }
 
         .form-group {
-            margin-bottom: 13px;
+            margin-bottom: 14px;
         }
 
         .form-group label {
             display: block;
-            color: #34415d;
+            margin-bottom: 7px;
+            color: #303955;
             font-size: 13px;
             font-weight: 600;
-            margin-bottom: 7px;
         }
 
         .form-group input {
             width: 100%;
-            height: 41px;
+            height: 42px;
             padding: 0 13px;
-            border: 1px solid #dce3ef;
-            border-radius: 8px;
-            outline: none;
+            border: 1px solid #d9e1f0;
+            border-radius: 9px;
             background: #fff;
-            color: #29334b;
-            font-size: 12px;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            color: #252b45;
+            font-size: 13px;
+            outline: none;
         }
 
         .form-group input:focus {
-            border-color: #5486cf;
-            box-shadow: 0 0 0 3px rgba(84, 134, 207, 0.12);
+            border-color: #5788d3;
+            box-shadow: 0 0 0 3px rgba(87, 136, 211, .13);
         }
 
         .form-group input::placeholder {
-            color: #a0aec4;
+            color: #9aa9c3;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 45px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: transparent;
+            color: #71809b;
+            cursor: pointer;
+        }
+
+        .toggle-password svg {
+            width: 20px;
+            height: 20px;
         }
 
         .password-hint {
             display: block;
-            color: #8995aa;
-            font-size: 10px;
             margin-top: 6px;
+            color: #8491aa;
+            font-size: 10px;
             line-height: 1.5;
         }
 
         .agreement {
+            margin: 17px 0 19px;
+        }
+
+        .agreement-label {
             display: flex;
             align-items: flex-start;
             gap: 9px;
-            margin: 17px 0;
-            color: #687790;
+            color: #56617c;
             font-size: 11px;
             line-height: 1.7;
+            cursor: pointer;
         }
 
-        .agreement input {
+        .agreement-label input {
+            width: 14px;
+            height: 14px;
             flex-shrink: 0;
             margin-top: 3px;
-            accent-color: #4775bd;
+            accent-color: #4779c5;
             cursor: pointer;
         }
 
-        .agreement a {
-            color: #3265b7;
-            text-decoration: none;
-        }
-
-        .agreement a:hover {
-            text-decoration: underline;
-        }
-
-        .register-button {
-            width: 100%;
-            height: 42px;
-            border: none;
-            border-radius: 9px;
-            background: linear-gradient(100deg, #588bd5, #416bb3);
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: opacity 0.2s, transform 0.2s;
-        }
-
-        .register-button:hover {
-            opacity: 0.92;
-            transform: translateY(-1px);
-        }
-
-        .register-button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .error-message {
-            padding: 10px 12px;
-            margin-bottom: 14px;
-            border: 1px solid #f1c6c6;
-            border-radius: 7px;
-            background: #fff0f0;
-            color: #b42318;
-            font-size: 12px;
-            line-height: 1.6;
-        }
-
-        .login-text {
-            margin-top: 18px;
-            text-align: center;
-            color: #7d8aa1;
-            font-size: 12px;
-        }
-
-        .login-text a {
-            color: #3265b7;
+        .agreement-label a {
+            color: #2459ad;
             font-weight: 600;
             text-decoration: none;
         }
 
-        .login-text a:hover {
+        .agreement-label a:hover {
             text-decoration: underline;
         }
 
-        .legal-links {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            margin-top: 16px;
-            padding-top: 13px;
-            border-top: 1px solid #e1e7f1;
-            color: #9aa5b8;
-            font-size: 10px;
+        .submit-button {
+            width: 100%;
+            min-height: 42px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(100deg, #568bd8, #416bb5);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
         }
 
-        .legal-links a {
-            color: #5278b8;
+        .submit-button:not(:disabled):hover {
+            background: linear-gradient(100deg, #477bc6, #345ba0);
+        }
+
+        .submit-button:disabled {
+            background: #aabbd5;
+            color: #f5f7fc;
+            cursor: not-allowed;
+            opacity: .75;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 18px;
+            color: #7c879f;
+            font-size: 12px;
+        }
+
+        .login-link a {
+            color: #285db5;
+            font-weight: 600;
             text-decoration: none;
         }
 
-        .legal-links a:hover {
-            color: #244f98;
+        .login-link a:hover {
             text-decoration: underline;
         }
 
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 9px;
+            border-top: 1px solid #e0e5ef;
+            margin-top: 18px;
+            padding-top: 14px;
+            font-size: 10px;
+        }
+
+        .footer-links a {
+            color: #3264b8;
+            text-decoration: none;
+        }
+
+        .footer-links span {
+            color: #a4aec1;
+        }
+
+        .error-message {
+            padding: 10px 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background: #fff0f0;
+            color: #b42332;
+            border: 1px solid #f0cccc;
+            font-size: 12px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .error-message ul {
+            padding-left: 18px;
+        }
+
         @media (max-width: 480px) {
-            .register-card {
-                padding: 24px 22px 20px;
-                border-radius: 17px;
+            body {
+                padding: 16px 12px;
             }
 
-            .register-header h1 {
+            .auth-card {
+                padding: 23px 21px;
+            }
+
+            .auth-header h1 {
                 font-size: 23px;
             }
         }
@@ -232,118 +294,239 @@
 </head>
 
 <body>
+    <div class="decoration one"></div>
+    <div class="decoration two"></div>
 
-    <div class="register-card">
+    <main class="auth-container">
+        <section class="auth-card">
 
-        <div class="register-header">
-            <h1>Create Account</h1>
-            <p>
-                Bergabunglah dengan Posting Sosmed.<br>
-                Buat akun untuk memulai perjalananmu.
-            </p>
-        </div>
+            <header class="auth-header">
+                <div class="auth-logo">
+                    <img
+                        src="{{ asset('images/logo.png') }}"
+                        alt="Logo Posting Sosmed"
+                    >
+                </div>
 
-        @if ($errors->any())
-            <div class="error-message">
-                @foreach ($errors->all() as $error)
-                    <div>{{ $error }}</div>
-                @endforeach
-            </div>
-        @endif
+                <h1>Create Account</h1>
+                <p>
+                    Bergabunglah dengan Posting Sosmed.
+                    <br>
+                    Buat akun untuk memulai perjalananmu.
+                </p>
+            </header>
 
+<<<<<<< HEAD
         <form method="POST" action="{{ route('register', absolute: false) }}">
             @csrf
+=======
+            @if ($errors->any())
+                <div class="error-message">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+>>>>>>> 66d0ac889e53a75ebc4a07ce64df67b3065f4903
 
-            <div class="form-group">
-                <label for="name">Nama Lengkap</label>
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value="{{ old('name') }}"
-                    placeholder="Masukkan nama lengkap"
-                    autocomplete="name"
-                    required
-                    autofocus
+            <form method="POST"
+                  action="{{ route('register') }}"
+                  id="register-form">
+                @csrf
+
+                <div class="form-group">
+                    <label for="name">Nama Lengkap</label>
+                    <input
+                        id="name"
+                        type="text"
+                        name="name"
+                        value="{{ old('name') }}"
+                        placeholder="Masukkan nama lengkap"
+                        autocomplete="name"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input
+                        id="email"
+                        type="email"
+                        name="email"
+                        value="{{ old('email') }}"
+                        placeholder="nama@gmail.com"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+
+                    <div class="password-wrapper">
+                        <input
+                            id="password"
+                            type="password"
+                            name="password"
+                            placeholder="Buat password"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                        <button type="button"
+                                class="toggle-password"
+                                aria-label="Tampilkan password"
+                                aria-pressed="false"
+                                onclick="togglePassword('password', this)">
+                            <svg viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="1.8"
+                                 stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <small class="password-hint">
+                        Gunakan password yang kuat dan jangan bagikan kepada orang lain.
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="password_confirmation">
+                        Konfirmasi Password
+                    </label>
+
+                    <div class="password-wrapper">
+                        <input
+                            id="password_confirmation"
+                            type="password"
+                            name="password_confirmation"
+                            placeholder="Masukkan ulang password"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                        <button type="button"
+                                class="toggle-password"
+                                aria-label="Tampilkan password"
+                                aria-pressed="false"
+                                onclick="togglePassword('password_confirmation', this)">
+                            <svg viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="1.8"
+                                 stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="agreement">
+                    <label for="terms" class="agreement-label">
+                        <input
+                            type="checkbox"
+                            id="terms"
+                            name="terms"
+                            value="1"
+                            required
+                        >
+
+                        <span>
+                            Saya menyetujui
+                            <a href="{{ url('/terms-of-service') }}"
+                               target="_blank"
+                               rel="noopener noreferrer">
+                                Ketentuan Layanan
+                            </a>
+                            dan telah membaca
+                            <a href="{{ url('/privacy-policy') }}"
+                               target="_blank"
+                               rel="noopener noreferrer">
+                                Kebijakan Privasi
+                            </a>.
+                        </span>
+                    </label>
+                </div>
+
+                <button
+                    type="submit"
+                    id="register-button"
+                    class="submit-button"
+                    disabled
                 >
+                    CREATE ACCOUNT
+                </button>
+            </form>
+
+            <div class="login-link">
+                Sudah punya akun?
+                <a href="{{ route('login') }}">Login</a>
             </div>
 
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value="{{ old('email') }}"
-                    placeholder="nama@gmail.com"
-                    autocomplete="email"
-                    required
-                >
-            </div>
+            <footer class="footer-links">
+                <a href="{{ url('/privacy-policy') }}">Kebijakan Privasi</a>
+                <span>-</span>
+                <a href="{{ url('/terms-of-service') }}">Ketentuan Layanan</a>
+            </footer>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Buat password"
-                    autocomplete="new-password"
-                    required
-                >
-                <span class="password-hint">
-                    Gunakan password yang kuat dan jangan bagikan kepada orang lain.
-                </span>
-            </div>
+        </section>
+    </main>
 
-            <div class="form-group">
-                <label for="password_confirmation">Konfirmasi Password</label>
-                <input
-                    type="password"
-                    id="password_confirmation"
-                    name="password_confirmation"
-                    placeholder="Masukkan ulang password"
-                    autocomplete="new-password"
-                    required
-                >
-            </div>
+    <script>
+        function togglePassword(inputId, button) {
+            const input = document.getElementById(inputId);
+            const visible = input.type === 'password';
 
-            <label class="agreement">
-                <input
-                    type="checkbox"
-                    name="agree_to_terms"
-                    value="1"
-                    required
-                >
-                <span>
-                    Saya menyetujui
-                    <a href="{{ url('/terms-of-service') }}" target="_blank">
-                        Ketentuan Layanan
-                    </a>
-                    dan telah membaca
-                    <a href="{{ url('/privacy-policy') }}" target="_blank">
-                        Kebijakan Privasi
-                    </a>.
-                </span>
-            </label>
+            input.type = visible ? 'text' : 'password';
+            button.setAttribute('aria-pressed', String(visible));
+            button.setAttribute(
+                'aria-label',
+                visible ? 'Sembunyikan password' : 'Tampilkan password'
+            );
 
-            <button type="submit" class="register-button">
-                CREATE ACCOUNT
-            </button>
-        </form>
+            button.innerHTML = visible
+                ? `<svg viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 3l18 18"/>
+                    <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/>
+                    <path d="M9.9 5.2A10.8 10.8 0 0 1 12 5
+                    c6.4 0 10 7 10 7a16 16 0 0 1-3.1 3.9"/>
+                    <path d="M6.2 6.2C3.5 8 2 12 2 12
+                    s3.6 7 10 7c1.2 0 2.3-.2 3.3-.6"/>
+                    </svg>`
+                : `<svg viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                    </svg>`;
+        }
 
-        <p class="login-text">
-            Sudah punya akun?
-            <a href="{{ route('login') }}">Login</a>
-        </p>
+        document.addEventListener('DOMContentLoaded', function () {
+            const checkbox = document.getElementById('terms');
+            const button = document.getElementById('register-button');
+            const form = document.getElementById('register-form');
 
-        <div class="legal-links">
-            <a href="{{ url('/privacy-policy') }}">Kebijakan Privasi</a>
-            <span>•</span>
-            <a href="{{ url('/terms-of-service') }}">Ketentuan Layanan</a>
-        </div>
+            function updateButton() {
+                button.disabled = !checkbox.checked;
+            }
 
-    </div>
+            checkbox.addEventListener('change', updateButton);
 
+            form.addEventListener('submit', function (event) {
+                if (!checkbox.checked) {
+                    event.preventDefault();
+                    updateButton();
+                    checkbox.focus();
+                }
+            });
+
+            updateButton();
+        });
+    </script>
 </body>
 </html>

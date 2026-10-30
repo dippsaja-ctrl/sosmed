@@ -12,6 +12,7 @@ class HistoryController extends Controller
     public function index(Request $request)
     {
         $filter = $request->query('f', 'all');
+        $keyword = trim((string) $request->query('q', ''));
 
         $q = Post::with([
             'targets.histories' => fn ($h) => $h->latest(),
@@ -20,7 +21,10 @@ class HistoryController extends Controller
             ->whereIn('state', ['processing', 'done']);
 
         if ($filter === 'bad') {
-            $q->whereHas('targets', fn ($t) => $t->where('status', 'failed'));
+            $q->whereHas(
+                'targets',
+                fn ($t) => $t->where('status', 'failed')
+            );
         } elseif ($filter === 'ok') {
             $q->where('state', 'done')
                 ->whereDoesntHave(
@@ -29,9 +33,49 @@ class HistoryController extends Controller
                 );
         }
 
+        // Cari caption atau nama platform jika minimal 2 karakter.
+        if (mb_strlen($keyword) >= 2) {
+            $q->where(function ($search) use ($keyword) {
+                $search->where('caption', 'like', '%' . $keyword . '%')
+                    ->orWhereHas('targets', function ($targets) use ($keyword) {
+                        $targets->where(
+                            'platform',
+                            'like',
+                            '%' . $keyword . '%'
+                        );
+                    });
+            });
+        }
+
         $posts = $q->latest()->limit(50)->get();
 
-        return view('history.index', compact('posts', 'filter'));
+        // Permintaan pencarian langsung mengembalikan HTML hasil,
+        // sehingga halaman tidak perlu dimuat ulang.
+        if ($request->ajax()) {
+            $html = '';
+
+            foreach ($posts as $post) {
+                $html .= view('partials.post-row', [
+                    'post' => $post,
+                    'mode' => 'history',
+                ])->render();
+            }
+
+            return response()->json([
+                'html' => $html,
+                'count' => $posts->count(),
+                'empty' => $posts->isEmpty(),
+                'processing' => $posts->contains(
+                    fn ($post) => $post->state === 'processing'
+                ),
+            ]);
+        }
+
+        return view('history.index', compact(
+            'posts',
+            'filter',
+            'keyword'
+        ));
     }
 
     public function retry(Post $post, string $platform)
@@ -42,7 +86,6 @@ class HistoryController extends Controller
             return back()->withErrors(['retry' => $problem]);
         }
 
-        // Pastikan hanya target berstatus gagal yang bisa dicoba ulang.
         $claimed = $post->targets()
             ->where('platform', $platform)
             ->where('status', 'failed')
@@ -68,7 +111,9 @@ class HistoryController extends Controller
 
         return back()->with(
             'ok',
-            'Mencoba lagi ke '.config("posting.platforms.$platform.label", ucfirst($platform)).'.'
+            'Mencoba lagi ke ' .
+            config("posting.platforms.$platform.label", ucfirst($platform)) .
+            '.'
         );
     }
 
@@ -91,7 +136,6 @@ class HistoryController extends Controller
                 continue;
             }
 
-            // Klaim target yang masih gagal agar tidak diproses dua kali.
             $claimed = $post->targets()
                 ->where('platform', $platform)
                 ->where('status', 'failed')
@@ -134,14 +178,16 @@ class HistoryController extends Controller
             );
 
             $back->withErrors([
-                'retry' => 'Perlu hubungkan ulang akun berikut: '.implode(', ', $labels),
+                'retry' => 'Perlu hubungkan ulang akun berikut: ' .
+                    implode(', ', $labels),
             ]);
         }
 
         if ($started) {
             return $back->with(
                 'ok',
-                'Mencoba ulang platform: '.implode(', ', $started).'.'
+                'Mencoba ulang platform: ' .
+                    implode(', ', $started) . '.'
             );
         }
 

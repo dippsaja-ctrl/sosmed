@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -8,6 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
+<<<<<<< HEAD
         Schema::create('social_accounts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
@@ -22,6 +24,29 @@ return new class extends Migration
 
             $table->unique(['user_id', 'platform']);
         });
+=======
+        if (!Schema::hasTable('social_accounts')) {
+            Schema::create('social_accounts', function (Blueprint $table) {
+                $table->id();
+
+                $table->foreignId('user_id')
+                    ->constrained()
+                    ->cascadeOnDelete();
+
+                $table->string('platform');
+                $table->string('handle')->nullable();
+                $table->string('external_id')->nullable();
+                $table->text('access_token');
+                $table->text('refresh_token')->nullable();
+                $table->timestamp('expires_at')->nullable();
+                $table->timestamp('connected_at')->nullable();
+
+                $table->timestamps();
+
+                $table->unique(['user_id', 'platform']);
+            });
+        }
+>>>>>>> 66d0ac889e53a75ebc4a07ce64df67b3065f4903
     }
 
     public function down(): void

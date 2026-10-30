@@ -1,113 +1,639 @@
 @extends('layouts.app')
-@section('title', 'Buat posting')
+
+@section('title', 'Buat Posting')
+
 @section('content')
 
+{{-- CONTAINER INFORMASI HALAMAN --}}
+<section class="card">
+    <div class="row">
+        <div>
+            <h3 style="margin: 0;">Buat dan Atur Posting</h3>
+
+            <p class="muted sm" style="margin: 6px 0 0;">
+                Buat konten baru, tambahkan media dan caption, lalu pilih
+                akun media sosial tujuan untuk memublikasikan posting Anda.
+            </p>
+        </div>
+    </div>
+</section>
+
+{{-- PESAN KESALAHAN VALIDASI PLATFORM --}}
 @if(session('platform_errors'))
     <div class="flash bad" role="alert">
         <b>Konten belum memenuhi aturan platform:</b>
+
         @foreach(session('platform_errors') as $key => $list)
-            <p style="margin:8px 0 0"><b>{{ $key === 'umum' ? 'Umum' : ($platforms[$key]['label'] ?? $key) }}</b></p>
-            <ul>@foreach($list as $msg)<li>{{ $msg }}</li>@endforeach</ul>
+            <p style="margin: 8px 0 0;">
+                <b>
+                    {{ $key === 'umum' ? 'Umum' : ($platforms[$key]['label'] ?? $key) }}
+                </b>
+            </p>
+
+            <ul>
+                @foreach($list as $msg)
+                    <li>{{ $msg }}</li>
+                @endforeach
+            </ul>
         @endforeach
-        <p class="sm" style="margin-top:8px">Pilih ulang file media setelah memperbaiki masalah di atas.</p>
+
+        <p class="sm" style="margin-top: 8px;">
+            Pilih ulang file media setelah memperbaiki masalah di atas.
+        </p>
     </div>
 @endif
 
-<form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data" id="postForm" class="composer">
-@csrf
-<div>
-    <section class="card">
-        <h3>Jenis konten</h3>
-        <div class="seg">
-            @foreach(['video' => ['Video / Reels', 'Satu video, vertikal disarankan'], 'carousel' => ['Carousel', '2 foto atau lebih, berurutan'], 'photo' => ['Foto', 'Satu foto']] as $k => $v)
-                <label class="seg-item"><input type="radio" name="type" value="{{ $k }}" @checked(old('type', 'video') === $k)><b>{{ $v[0] }}</b><small>{{ $v[1] }}</small></label>
-            @endforeach
-        </div>
-    </section>
+{{-- FORM UTAMA POSTING --}}
+<form
+    method="POST"
+    action="{{ route('posts.store') }}"
+    enctype="multipart/form-data"
+    id="postForm"
+    class="composer"
+>
+    @csrf
 
-    <section class="card">
-        <h3>Platform tujuan</h3>
-        <div class="stamps">
-            @foreach($platforms as $key => $p)
-                <label class="stamp" style="--c:{{ $p['color'] }}" data-platform="{{ $key }}"
-                       data-connected="{{ isset($accounts[$key]) ? 1 : 0 }}" data-types="{{ implode(',', array_keys($p['types'])) }}">
-                    <input type="checkbox" name="targets[]" value="{{ $key }}" @checked(in_array($key, old('targets', []))) @disabled(!isset($accounts[$key]))>
-                    <span class="code" style="--c:{{ $p['color'] }}">{{ $p['short'] }}</span>
-                    <b>{{ $p['label'] }}</b>
-                    <small class="stamp-note">{{ isset($accounts[$key]) ? '' : 'Belum terhubung' }}</small>
+    <div>
+        {{-- JENIS KONTEN --}}
+        <section class="card">
+            <h3>Jenis Konten</h3>
+
+            <div class="seg">
+                @foreach([
+                    'video' => ['Video / Reels', 'Satu video, vertikal disarankan'],
+                    'carousel' => ['Carousel', '2 foto atau lebih, berurutan'],
+                    'photo' => ['Foto', 'Satu foto']
+                ] as $k => $v)
+                    <label class="seg-item">
+                        <input
+                            type="radio"
+                            name="type"
+                            value="{{ $k }}"
+                            @checked(old('type', 'video') === $k)
+                        >
+
+                        <b>{{ $v[0] }}</b>
+                        <small>{{ $v[1] }}</small>
+                    </label>
+                @endforeach
+            </div>
+        </section>
+
+        {{-- PLATFORM TUJUAN --}}
+        <section class="card">
+            <h3>Platform Tujuan</h3>
+
+            <div class="stamps">
+                @foreach($platforms as $key => $p)
+                    <label
+                        class="stamp"
+                        style="--c:{{ $p['color'] }}"
+                        data-platform="{{ $key }}"
+                        data-connected="{{ isset($accounts[$key]) ? 1 : 0 }}"
+                        data-types="{{ implode(',', array_keys($p['types'])) }}"
+                    >
+                        <input
+                            type="checkbox"
+                            name="targets[]"
+                            value="{{ $key }}"
+                            @checked(in_array($key, old('targets', [])))
+                            @disabled(!isset($accounts[$key]))
+                        >
+
+                        <span class="code" style="--c:{{ $p['color'] }}">
+                            {{ $p['short'] }}
+                        </span>
+
+                        <b>{{ $p['label'] }}</b>
+
+                        <small class="stamp-note">
+                            {{ isset($accounts[$key]) ? '' : 'Belum terhubung' }}
+                        </small>
+                    </label>
+                @endforeach
+            </div>
+
+            @if($accounts->count() < count($platforms))
+                <p class="hint">
+                    Platform yang belum terhubung tidak bisa dipilih.
+                    <a href="{{ route('accounts.index') }}">
+                        Hubungkan di Akun Sosmed
+                    </a>.
+                </p>
+            @endif
+        </section>
+
+        {{-- MEDIA --}}
+        <section class="card">
+            <h3 id="mediaTitle">Media</h3>
+
+            <label class="drop" id="drop" for="picker">
+                <b id="dropText">Pilih atau seret file ke sini</b>
+                <br>
+
+                <span class="muted sm">
+                    Format: JPG, PNG, WEBP, MP4, MOV.
+                </span>
+            </label>
+
+            <input type="file" id="picker" hidden>
+
+            {{-- File yang dikirim ke server --}}
+            <input type="file" name="media[]" id="media" multiple hidden>
+
+            <input
+                type="hidden"
+                name="video_duration"
+                id="video_duration"
+            >
+
+            <ul class="mlist" id="mlist"></ul>
+        </section>
+
+        {{-- CAPTION --}}
+        <section class="card">
+            <h3>Caption</h3>
+
+            <textarea
+                class="in"
+                name="caption"
+                id="caption"
+                rows="5"
+                placeholder="Tulis caption yang sama untuk semua platform"
+            >{{ old('caption') }}</textarea>
+
+            <div class="hint" id="capCount"></div>
+        </section>
+
+        {{-- DETAIL YOUTUBE --}}
+        <section class="card hidden" id="ytBox">
+            <h3>Detail YouTube</h3>
+
+            <div class="field">
+                <label class="f" for="yt_title">Judul</label>
+
+                <input
+                    class="in"
+                    id="yt_title"
+                    name="yt[title]"
+                    value="{{ old('yt.title') }}"
+                    maxlength="100"
+                >
+            </div>
+
+            <div class="field">
+                <label class="f" for="yt_desc">Deskripsi</label>
+
+                <textarea
+                    class="in"
+                    id="yt_desc"
+                    name="yt[desc]"
+                    rows="3"
+                >{{ old('yt.desc') }}</textarea>
+            </div>
+
+            <div class="field">
+                <label class="f" for="yt_tags">Tags</label>
+
+                <input
+                    class="in"
+                    id="yt_tags"
+                    name="yt[tags]"
+                    value="{{ old('yt.tags') }}"
+                    placeholder="pisahkan dengan koma"
+                >
+            </div>
+
+            <div class="grid2" style="gap: 12px;">
+                <div>
+                    <label class="f" for="yt_cat">Kategori</label>
+
+                    <select class="in" id="yt_cat" name="yt[category]">
+                        @foreach([
+                            '22' => 'Orang dan Blog',
+                            '24' => 'Hiburan',
+                            '27' => 'Pendidikan',
+                            '28' => 'Sains dan Teknologi',
+                            '25' => 'Berita dan Politik'
+                        ] as $v => $l)
+                            <option
+                                value="{{ $v }}"
+                                @selected(old('yt.category', '22') === (string) $v)
+                            >
+                                {{ $l }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="f" for="yt_vis">Visibilitas</label>
+
+                    <select class="in" id="yt_vis" name="yt[visibility]">
+                        @foreach([
+                            'private' => 'Privat',
+                            'unlisted' => 'Tidak terdaftar',
+                            'public' => 'Publik'
+                        ] as $v => $l)
+                            <option
+                                value="{{ $v }}"
+                                @selected(old('yt.visibility', 'private') === $v)
+                            >
+                                {{ $l }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+            <p class="hint">
+                Visibilitas publik baru aktif setelah audit Google disetujui.
+            </p>
+        </section>
+
+        {{-- WAKTU POSTING --}}
+        <section class="card">
+            <h3>Waktu Posting</h3>
+
+            <div class="seg" style="margin-bottom: 12px;">
+                <label class="seg-item">
+                    <input
+                        type="radio"
+                        name="mode"
+                        value="now"
+                        @checked(old('mode', 'now') === 'now')
+                    >
+
+                    <b>Posting Sekarang</b>
+                    <small>Dikirim setelah Anda konfirmasi</small>
                 </label>
-            @endforeach
+
+                <label class="seg-item">
+                    <input
+                        type="radio"
+                        name="mode"
+                        value="schedule"
+                        @checked(old('mode') === 'schedule')
+                    >
+
+                    <b>Jadwalkan</b>
+                    <small>Terbit otomatis lewat scheduler</small>
+                </label>
+            </div>
+
+            <div class="field hidden" id="whenBox">
+                <label class="f" for="scheduled_at">
+                    Tanggal dan Jam Terbit
+                </label>
+
+                <input
+                    class="in"
+                    type="datetime-local"
+                    id="scheduled_at"
+                    name="scheduled_at"
+                    value="{{ old('scheduled_at') }}"
+                    min="{{ now()->addMinute()->format('Y-m-d\TH:i') }}"
+                >
+
+                <p class="hint">
+                    Zona waktu server: {{ config('app.timezone') }}.
+                </p>
+            </div>
+        </section>
+
+        {{-- TOMBOL FORM --}}
+        <div class="row">
+            <button class="btn primary" type="submit">
+                Periksa dan Pratinjau
+            </button>
         </div>
-        @if($accounts->count() < count($platforms))
-            <p class="hint">Platform yang belum terhubung tidak bisa dipilih. <a href="{{ route('accounts.index') }}">Hubungkan di Akun Sosmed</a>.</p>
-        @endif
-    </section>
+    </div>
 
-    <section class="card">
-        <h3 id="mediaTitle">Media</h3>
-        <label class="drop" id="drop" for="picker">
-            <b id="dropText">Pilih atau seret file ke sini</b><br>
-            <span class="muted sm">Format: JPG, PNG, WEBP, MP4, MOV.</span>
-        </label>
-        <input type="file" id="picker" hidden>
-        {{-- input inilah yang dikirim ke server; isinya diatur JavaScript agar urutan slide sesuai --}}
-        <input type="file" name="media[]" id="media" multiple hidden>
-        <input type="hidden" name="video_duration" id="video_duration">
-        <ul class="mlist" id="mlist"></ul>
-    </section>
+    {{-- CONTAINER ATURAN PLATFORM --}}
+    <aside>
+        {{-- PANEL KANAN --}}
+<aside class="posting-sidebar">
 
-    <section class="card">
-        <h3>Caption</h3>
-        <textarea class="in" name="caption" id="caption" rows="5" placeholder="Tulis caption yang sama untuk semua platform">{{ old('caption') }}</textarea>
-        <div class="hint" id="capCount"></div>
-    </section>
-
-    <section class="card hidden" id="ytBox">
-        <h3>Detail YouTube</h3>
-        <div class="field"><label class="f" for="yt_title">Judul</label><input class="in" id="yt_title" name="yt[title]" value="{{ old('yt.title') }}" maxlength="100"></div>
-        <div class="field"><label class="f" for="yt_desc">Deskripsi</label><textarea class="in" id="yt_desc" name="yt[desc]" rows="3">{{ old('yt.desc') }}</textarea></div>
-        <div class="field"><label class="f" for="yt_tags">Tags</label><input class="in" id="yt_tags" name="yt[tags]" value="{{ old('yt.tags') }}" placeholder="pisahkan dengan koma"></div>
-        <div class="grid2" style="gap:12px">
-            <div><label class="f" for="yt_cat">Kategori</label>
-                <select class="in" id="yt_cat" name="yt[category]">
-                    @foreach(['22' => 'Orang dan Blog', '24' => 'Hiburan', '27' => 'Pendidikan', '28' => 'Sains dan Teknologi', '25' => 'Berita dan Politik'] as $v => $l)
-                        <option value="{{ $v }}" @selected(old('yt.category', '22') === (string) $v)>{{ $l }}</option>
-                    @endforeach
-                </select></div>
-            <div><label class="f" for="yt_vis">Visibilitas</label>
-                <select class="in" id="yt_vis" name="yt[visibility]">
-                    @foreach(['private' => 'Privat', 'unlisted' => 'Tidak terdaftar', 'public' => 'Publik'] as $v => $l)
-                        <option value="{{ $v }}" @selected(old('yt.visibility', 'private') === $v)>{{ $l }}</option>
-                    @endforeach
-                </select></div>
+    {{-- ATURAN PLATFORM --}}
+    <section class="card posting-side-card">
+        <div class="posting-side-heading">
+            <span class="posting-side-icon">⚙</span>
+            <div>
+                <h3>Aturan Platform</h3>
+                <p class="muted sm">Ketentuan konten yang dipilih</p>
+            </div>
         </div>
-        <p class="hint">Visibilitas publik baru aktif setelah audit Google disetujui.</p>
-    </section>
 
-    <section class="card">
-        <h3>Waktu posting</h3>
-        <div class="seg" style="margin-bottom:12px">
-            <label class="seg-item"><input type="radio" name="mode" value="now" @checked(old('mode', 'now') === 'now')><b>Posting sekarang</b><small>Dikirim setelah Anda konfirmasi</small></label>
-            <label class="seg-item"><input type="radio" name="mode" value="schedule" @checked(old('mode') === 'schedule')><b>Jadwalkan</b><small>Terbit otomatis lewat scheduler</small></label>
+        <div id="rules">
+            <p class="muted">
+                Pilih platform untuk melihat aturannya.
+            </p>
         </div>
-        <div class="field hidden" id="whenBox">
-            <label class="f" for="scheduled_at">Tanggal dan jam terbit</label>
-            <input class="in" type="datetime-local" id="scheduled_at" name="scheduled_at" value="{{ old('scheduled_at') }}" min="{{ now()->addMinute()->format('Y-m-d\TH:i') }}">
-            <p class="hint">Zona waktu server: {{ config('app.timezone') }}.</p>
+
+        <p class="hint">
+            Server memeriksa ulang semua aturan ini saat Anda
+            menekan Periksa dan Pratinjau.
+        </p>
+    </section>
+
+    {{-- PANDUAN KONTEN --}}
+    <section class="card posting-side-card">
+        <div class="posting-side-heading">
+            <span class="posting-side-icon">✦</span>
+            <div>
+                <h3>Panduan Konten</h3>
+                <p class="muted sm">Tips sebelum memublikasikan</p>
+            </div>
+        </div>
+
+        <div class="posting-guide-list">
+            <div class="posting-guide-item">
+                <span class="posting-guide-number">01</span>
+                <div>
+                    <b>Pilih media yang sesuai</b>
+                    <p>Sesuaikan foto atau video dengan jenis konten.</p>
+                </div>
+            </div>
+
+            <div class="posting-guide-item">
+                <span class="posting-guide-number">02</span>
+                <div>
+                    <b>Buat caption yang menarik</b>
+                    <p>Gunakan tulisan yang jelas dan sesuai dengan konten.</p>
+                </div>
+            </div>
+
+            <div class="posting-guide-item">
+                <span class="posting-guide-number">03</span>
+                <div>
+                    <b>Periksa platform tujuan</b>
+                    <p>Pastikan akun sudah terhubung dan mendukung konten.</p>
+                </div>
+            </div>
         </div>
     </section>
 
-    <div class="row"><button class="btn primary" type="submit">Periksa dan pratinjau</button></div>
-</div>
+    {{-- RINGKASAN POSTING --}}
+    <section class="card posting-side-card posting-summary">
+        <div class="posting-side-heading">
+            <span class="posting-side-icon">▤</span>
+            <div>
+                <h3>Ringkasan Posting</h3>
+                <p class="muted sm">Periksa sebelum melanjutkan</p>
+            </div>
+        </div>
 
-<aside>
-    <section class="card">
-        <h3>Aturan platform (contoh)</h3>
-        <div id="rules"></div>
-        <p class="hint">Server memeriksa ulang semua aturan ini saat Anda menekan Periksa dan pratinjau. Cek dokumentasi resmi untuk batas terbaru.</p>
+        <div class="posting-summary-row">
+            <span>Jenis konten</span>
+            <b id="summaryType">Video / Reels</b>
+        </div>
+
+        <div class="posting-summary-row">
+            <span>Platform dipilih</span>
+            <b id="summaryPlatforms">0 platform</b>
+        </div>
+
+        <div class="posting-summary-row">
+            <span>Media</span>
+            <b id="summaryMedia">Belum dipilih</b>
+        </div>
+
+        <div class="posting-summary-row">
+            <span>Caption</span>
+            <b id="summaryCaption">Belum diisi</b>
+        </div>
+
+        <div class="posting-summary-note">
+            <span class="posting-summary-dot"></span>
+            <span id="summaryStatus">Lengkapi konten Anda untuk melanjutkan.</span>
+        </div>
     </section>
+
 </aside>
+
+        <style>
+            .posting-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-width: 0;
+            align-self: stretch;
+        }
+
+            .posting-side-card {
+            min-width: 0;
+            margin: 0;
+            padding: 20px;
+            border: 1px solid #d7e0eb;
+            border-radius: 14px;
+            background: #fff;
+            box-shadow: 0 3px 12px rgba(17, 40, 70, .035);
+        }
+
+            .posting-side-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+            .posting-side-heading h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #102d4d;
+        }
+
+            .posting-side-heading p {
+            margin: 4px 0 0;
+        }
+
+            .posting-side-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border-radius: 11px;
+            background: #edf4fc;
+            color: #24598c;
+            font-size: 21px;
+        }
+
+            .posting-guide-list {
+            display: flex;
+            flex-direction: column;
+            gap: 17px;
+        }
+
+            .posting-guide-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+            .posting-guide-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: #edf4fc;
+            color: #24598c;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+            .posting-guide-item b {
+            display: block;
+            margin: 2px 0 5px;
+            color: #18334f;
+            font-size: 13px;
+        }
+
+            .posting-guide-item p {
+            margin: 0;
+            color: #718096;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+            .posting-summary {
+            background: linear-gradient(145deg, #fff 0%, #f7faff 100%);
+        }
+
+            .posting-summary-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #e8edf4;
+            font-size: 13px;
+        }
+
+            .posting-summary-row > span {
+            color: #718096;
+        }
+
+            .posting-summary-row > b {
+            color: #18334f;
+            text-align: right;
+            overflow-wrap: anywhere;
+        }
+
+            .posting-summary-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 9px;
+            background: #edf4fc;
+            color: #31577d;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+            .posting-summary-dot {
+            width: 8px;
+            height: 8px;
+            flex-shrink: 0;
+            margin-top: 5px;
+            border-radius: 50%;
+            background: #e9a23b;
+        }
+
+            .posting-summary-note.is-ready .posting-summary-dot {
+            background: #24a36a;
+        }
+
+        @media (max-width: 900px) {
+            .posting-sidebar {
+            margin-top: 0;
+        }
+    }
+    </style>
+
+    <script>
+    (function () {
+        const form = document.getElementById('postForm');
+
+        if (!form) return;
+
+        const typeLabels = {
+            video: 'Video / Reels',
+            carousel: 'Carousel',
+            photo: 'Foto'
+        };
+
+    function updatePostingSummary() {
+        const selectedType = form.querySelector('[name="type"]:checked');
+        const selectedPlatforms = [
+            ...form.querySelectorAll('[name="targets[]"]:checked')
+        ];
+
+        const mediaInput = document.getElementById('media');
+        const captionInput = document.getElementById('caption');
+
+        const mediaCount = mediaInput?.files?.length || 0;
+        const caption = captionInput?.value.trim() || '';
+
+        document.getElementById('summaryType').textContent =
+            typeLabels[selectedType?.value] || 'Belum dipilih';
+
+        document.getElementById('summaryPlatforms').textContent =
+            selectedPlatforms.length + ' platform';
+
+        document.getElementById('summaryMedia').textContent =
+            mediaCount > 0
+                ? mediaCount + ' file dipilih'
+                : 'Belum dipilih';
+
+        document.getElementById('summaryCaption').textContent =
+            caption ? 'Sudah diisi' : 'Belum diisi';
+
+        const status = document.getElementById('summaryStatus');
+        const note = status.closest('.posting-summary-note');
+
+        if (selectedPlatforms.length && mediaCount && caption) {
+            status.textContent = 'Konten sudah dilengkapi. Periksa kembali sebelum melanjutkan.';
+            note.classList.add('is-ready');
+        } else {
+            const missing = [];
+
+            if (!selectedPlatforms.length) missing.push('platform');
+            if (!mediaCount) missing.push('media');
+            if (!caption) missing.push('caption');
+
+            status.textContent =
+                'Lengkapi ' + missing.join(', ') + ' untuk melanjutkan.';
+
+            note.classList.remove('is-ready');
+        }
+    }
+
+    form.addEventListener('change', updatePostingSummary);
+    form.addEventListener('input', updatePostingSummary);
+
+    updatePostingSummary();
+})();
+</script>
+        <section class="card">
+            <h3>Aturan Platform</h3>
+
+            <div id="rules"></div>
+
+            <p class="hint">
+                Server memeriksa ulang semua aturan ini saat Anda menekan
+                Periksa dan Pratinjau. Cek dokumentasi resmi untuk batas terbaru.
+            </p>
+        </section>
+    </aside>
 </form>
+
 @endsection
 
 @push('scripts')
@@ -119,107 +645,314 @@
     const input = document.getElementById('media');
     const list = document.getElementById('mlist');
     const drop = document.getElementById('drop');
+
     let files = [];
 
-    const type = () => form.querySelector('[name=type]:checked').value;
-    const checked = () => [...form.querySelectorAll('[name="targets[]"]:checked')].map(i => i.value);
-    const fmt = b => b >= 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB';
-    const esc = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const type = () =>
+        form.querySelector('[name=type]:checked').value;
+
+    const checked = () =>
+        [...form.querySelectorAll('[name="targets[]"]:checked')]
+            .map(i => i.value);
+
+    const fmt = b =>
+        b >= 1048576
+            ? (b / 1048576).toFixed(1) + ' MB'
+            : Math.max(1, Math.round(b / 1024)) + ' KB';
+
+    const esc = s =>
+        s.replace(/[&<>"']/g, c => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[c]));
 
     function applyType() {
         const t = type();
+
         picker.accept = t === 'video' ? 'video/*' : 'image/*';
         picker.multiple = t === 'carousel';
-        document.getElementById('mediaTitle').textContent = t === 'video' ? 'Video' : t === 'photo' ? 'Foto' : 'Slide (urutan tampil)';
-        document.getElementById('dropText').textContent = t === 'video' ? 'Pilih atau seret video ke sini' : 'Pilih atau seret foto ke sini';
-        // kosongkan media jika jenisnya tidak cocok lagi
-        files = files.filter(f => (t === 'video') === f.type.startsWith('video/'));
-        if (t !== 'carousel') files = files.slice(0, 1);
-        // platform yang tidak mendukung jenis ini dinonaktifkan
+
+        document.getElementById('mediaTitle').textContent =
+            t === 'video'
+                ? 'Video'
+                : t === 'photo'
+                    ? 'Foto'
+                    : 'Slide (urutan tampil)';
+
+        document.getElementById('dropText').textContent =
+            t === 'video'
+                ? 'Pilih atau seret video ke sini'
+                : 'Pilih atau seret foto ke sini';
+
+        files = files.filter(f =>
+            (t === 'video') === f.type.startsWith('video/')
+        );
+
+        if (t !== 'carousel') {
+            files = files.slice(0, 1);
+        }
+
         form.querySelectorAll('.stamp').forEach(s => {
-            const ok = s.dataset.connected === '1' && s.dataset.types.split(',').includes(t);
+            const ok =
+                s.dataset.connected === '1' &&
+                s.dataset.types.split(',').includes(t);
+
             const cb = s.querySelector('input');
+
             cb.disabled = !ok;
-            if (!ok) cb.checked = false;
+
+            if (!ok) {
+                cb.checked = false;
+            }
+
             s.classList.toggle('off', !ok);
-            s.querySelector('.stamp-note').textContent = s.dataset.connected !== '1' ? 'Belum terhubung'
-                : !ok ? 'Tidak mendukung jenis ini' : 'Tampil sebagai ' + RULES[s.dataset.platform].types[t];
+
+            s.querySelector('.stamp-note').textContent =
+                s.dataset.connected !== '1'
+                    ? 'Belum terhubung'
+                    : !ok
+                        ? 'Tidak mendukung jenis ini'
+                        : 'Tampil sebagai ' + RULES[s.dataset.platform].types[t];
         });
+
         sync();
     }
 
     function sync() {
         const dt = new DataTransfer();
+
         files.forEach(f => dt.items.add(f));
         input.files = dt.files;
+
         renderList();
+
         const vid = type() === 'video' && files[0];
+
         document.getElementById('video_duration').value = '';
+
         if (vid) {
             const v = document.createElement('video');
+
             v.preload = 'metadata';
-            v.onloadedmetadata = () => { document.getElementById('video_duration').value = Math.round(v.duration); URL.revokeObjectURL(v.src); };
+
+            v.onloadedmetadata = () => {
+                document.getElementById('video_duration').value =
+                    Math.round(v.duration);
+
+                URL.revokeObjectURL(v.src);
+            };
+
             v.src = URL.createObjectURL(files[0]);
         }
+
         renderRules();
     }
 
     function renderList() {
         const t = type();
+
         list.innerHTML = files.map((f, i) => {
-            const thumb = f.type.startsWith('image/') ? '<img src="' + URL.createObjectURL(f) + '" alt="">' : 'Video';
-            return '<li>' + (t === 'carousel' ? '<span class="num">' + (i + 1) + '</span>' : '') +
-                '<span class="th">' + thumb + '</span><span class="meta"><b>' + esc(f.name) + '</b><span class="muted sm">' + fmt(f.size) + '</span></span>' +
-                (t === 'carousel' ? '<button type="button" class="btn sm" data-up="' + i + '"' + (i === 0 ? ' disabled' : '') + ' aria-label="Naikkan">&uarr;</button>' +
-                    '<button type="button" class="btn sm" data-down="' + i + '"' + (i === files.length - 1 ? ' disabled' : '') + ' aria-label="Turunkan">&darr;</button>' : '') +
-                '<button type="button" class="btn sm" data-del="' + i + '" aria-label="Hapus">&times;</button></li>';
+            const thumb = f.type.startsWith('image/')
+                ? '<img src="' + URL.createObjectURL(f) + '" alt="">'
+                : 'Video';
+
+            return '<li>' +
+                (t === 'carousel'
+                    ? '<span class="num">' + (i + 1) + '</span>'
+                    : '') +
+
+                '<span class="th">' + thumb + '</span>' +
+
+                '<span class="meta">' +
+                    '<b>' + esc(f.name) + '</b>' +
+                    '<span class="muted sm">' + fmt(f.size) + '</span>' +
+                '</span>' +
+
+                (t === 'carousel'
+                    ? '<button type="button" class="btn sm" data-up="' + i + '"' +
+                        (i === 0 ? ' disabled' : '') +
+                        ' aria-label="Naikkan">&uarr;</button>' +
+
+                      '<button type="button" class="btn sm" data-down="' + i + '"' +
+                        (i === files.length - 1 ? ' disabled' : '') +
+                        ' aria-label="Turunkan">&darr;</button>'
+                    : '') +
+
+                '<button type="button" class="btn sm" data-del="' + i + '"' +
+                    ' aria-label="Hapus">&times;</button>' +
+                '</li>';
         }).join('');
     }
 
     function renderRules() {
-        const t = type(), sel = checked();
+        const t = type();
+        const sel = checked();
         const box = document.getElementById('rules');
-        if (!sel.length) { box.innerHTML = '<p class="muted">Pilih platform untuk melihat aturannya.</p>'; return; }
+
+        if (!sel.length) {
+            box.innerHTML =
+                '<p class="muted">Pilih platform untuk melihat aturannya.</p>';
+
+            document.getElementById('ytBox').classList.add('hidden');
+            document.getElementById('capCount').textContent = '';
+
+            return;
+        }
+
         box.innerHTML = sel.map(k => {
-            const r = RULES[k], bits = [];
-            if (t === 'video') { bits.push('Video maks ' + r.video_mb + ' MB'); bits.push('Durasi ' + r.video_sec[0] + ' sampai ' + r.video_sec[1] + ' detik'); }
-            else { if (r.photo_mb) bits.push('Foto maks ' + r.photo_mb + ' MB'); if (t === 'carousel' && r.slides) bits.push(r.slides[0] + ' sampai ' + r.slides[1] + ' slide'); if (r.ratio) bits.push('Rasio ' + r.ratio[0] + ' sampai ' + r.ratio[1]); if (r.jpeg_only) bits.push('Hanya JPEG'); }
+            const r = RULES[k];
+            const bits = [];
+
+            if (t === 'video') {
+                bits.push('Video maks ' + r.video_mb + ' MB');
+                bits.push(
+                    'Durasi ' + r.video_sec[0] +
+                    ' sampai ' + r.video_sec[1] + ' detik'
+                );
+            } else {
+                if (r.photo_mb) {
+                    bits.push('Foto maks ' + r.photo_mb + ' MB');
+                }
+
+                if (t === 'carousel' && r.slides) {
+                    bits.push(
+                        r.slides[0] + ' sampai ' + r.slides[1] + ' slide'
+                    );
+                }
+
+                if (r.ratio) {
+                    bits.push(
+                        'Rasio ' + r.ratio[0] + ' sampai ' + r.ratio[1]
+                    );
+                }
+
+                if (r.jpeg_only) {
+                    bits.push('Hanya JPEG');
+                }
+            }
+
             bits.push('Caption maks ' + r.caption_max + ' karakter');
-            return '<p><b>' + r.label + '</b><br><span class="muted sm">' + bits.join(', ') + '</span></p>';
+
+            return '<p><b>' + esc(r.label) + '</b><br>' +
+                '<span class="muted sm">' + bits.map(esc).join(', ') +
+                '</span></p>';
         }).join('');
-        document.getElementById('ytBox').classList.toggle('hidden', !sel.includes('youtube'));
-        const lim = Math.min(...sel.filter(k => k !== 'youtube').map(k => RULES[k].caption_max), 2200);
-        document.getElementById('capCount').textContent = document.getElementById('caption').value.length + ' / ' + lim;
+
+        document.getElementById('ytBox').classList.toggle(
+            'hidden',
+            !sel.includes('youtube')
+        );
+
+        const limits = sel
+            .filter(k => k !== 'youtube')
+            .map(k => RULES[k].caption_max);
+
+        const lim = limits.length ? Math.min(...limits) : 2200;
+
+        document.getElementById('capCount').textContent =
+            document.getElementById('caption').value.length +
+            ' / ' + lim + ' karakter';
     }
 
     function add(list2) {
         const t = type();
-        const ok = list2.filter(f => (t === 'video') === f.type.startsWith('video/'));
-        if (ok.length !== list2.length) alert(t === 'video' ? 'Pilih file video.' : 'Pilih file gambar.');
-        files = t === 'carousel' ? files.concat(ok) : ok.slice(0, 1);
+
+        const ok = list2.filter(f =>
+            (t === 'video') === f.type.startsWith('video/')
+        );
+
+        if (ok.length !== list2.length) {
+            alert(
+                t === 'video'
+                    ? 'Pilih file video.'
+                    : 'Pilih file gambar.'
+            );
+        }
+
+        files = t === 'carousel'
+            ? files.concat(ok)
+            : ok.slice(0, 1);
+
         sync();
     }
 
-    picker.addEventListener('change', e => { add([...e.target.files]); picker.value = ''; });
-    drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
-    drop.addEventListener('dragleave', () => drop.classList.remove('over'));
-    drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('over'); add([...e.dataTransfer.files]); });
-    list.addEventListener('click', e => {
-        const b = e.target.closest('button'); if (!b) return;
-        const swap = (i, j) => { [files[i], files[j]] = [files[j], files[i]]; sync(); };
-        if (b.dataset.up) swap(+b.dataset.up, +b.dataset.up - 1);
-        if (b.dataset.down) swap(+b.dataset.down, +b.dataset.down + 1);
-        if (b.dataset.del) { files.splice(+b.dataset.del, 1); sync(); }
+    picker.addEventListener('change', e => {
+        add([...e.target.files]);
+        picker.value = '';
     });
-    form.querySelectorAll('[name=type]').forEach(r => r.addEventListener('change', applyType));
-    form.querySelectorAll('[name="targets[]"]').forEach(c => c.addEventListener('change', renderRules));
-    document.getElementById('caption').addEventListener('input', renderRules);
-    form.querySelectorAll('[name=mode]').forEach(r => r.addEventListener('change', () => {
-        const s = form.querySelector('[name=mode]:checked').value === 'schedule';
-        document.getElementById('whenBox').classList.toggle('hidden', !s);
-        document.getElementById('scheduled_at').required = s;
-    }));
-    form.querySelector('[name=mode]:checked').dispatchEvent(new Event('change'));
+
+    drop.addEventListener('dragover', e => {
+        e.preventDefault();
+        drop.classList.add('over');
+    });
+
+    drop.addEventListener('dragleave', () => {
+        drop.classList.remove('over');
+    });
+
+    drop.addEventListener('drop', e => {
+        e.preventDefault();
+        drop.classList.remove('over');
+        add([...e.dataTransfer.files]);
+    });
+
+    list.addEventListener('click', e => {
+        const b = e.target.closest('button');
+
+        if (!b) return;
+
+        const swap = (i, j) => {
+            [files[i], files[j]] = [files[j], files[i]];
+            sync();
+        };
+
+        if (b.dataset.up !== undefined) {
+            swap(+b.dataset.up, +b.dataset.up - 1);
+        }
+
+        if (b.dataset.down !== undefined) {
+            swap(+b.dataset.down, +b.dataset.down + 1);
+        }
+
+        if (b.dataset.del !== undefined) {
+            files.splice(+b.dataset.del, 1);
+            sync();
+        }
+    });
+
+    form.querySelectorAll('[name=type]').forEach(r => {
+        r.addEventListener('change', applyType);
+    });
+
+    form.querySelectorAll('[name="targets[]"]').forEach(c => {
+        c.addEventListener('change', renderRules);
+    });
+
+    document.getElementById('caption').addEventListener(
+        'input',
+        renderRules
+    );
+
+    form.querySelectorAll('[name=mode]').forEach(r => {
+        r.addEventListener('change', () => {
+            const s =
+                form.querySelector('[name=mode]:checked').value === 'schedule';
+
+            document.getElementById('whenBox').classList.toggle(
+                'hidden',
+                !s
+            );
+
+            document.getElementById('scheduled_at').required = s;
+        });
+    });
+
+    form.querySelector('[name=mode]:checked')
+        .dispatchEvent(new Event('change'));
+
     applyType();
 })();
 </script>

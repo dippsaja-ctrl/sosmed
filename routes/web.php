@@ -95,6 +95,7 @@ Route::post('/otp/reset-password', [OtpController::class, 'resetPassword'])
 
 Route::middleware('auth')->group(function () {
 
+<<<<<<< HEAD
     /*
     | Dashboard
     */
@@ -104,6 +105,13 @@ Route::middleware('auth')->group(function () {
     /*
     | Akun Media Sosial
     */
+=======
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    // Akun Media Sosial
+>>>>>>> 66d0ac889e53a75ebc4a07ce64df67b3065f4903
     Route::get('/accounts', [SocialAccountController::class, 'index'])
         ->name('accounts.index');
 
@@ -113,9 +121,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/accounts/{socialAccount}', [SocialAccountController::class, 'destroy'])
         ->name('accounts.destroy');
 
+<<<<<<< HEAD
     /*
     | Posting
     */
+=======
+    // Posting
+>>>>>>> 66d0ac889e53a75ebc4a07ce64df67b3065f4903
     Route::get('/posts/create', [PostController::class, 'create'])
         ->name('posts.create');
 
@@ -140,6 +152,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/posts/{post}/cancel', [PostController::class, 'cancel'])
         ->name('posts.cancel');
 
+<<<<<<< HEAD
     /*
     | Jadwal Posting
     */
@@ -149,6 +162,13 @@ Route::middleware('auth')->group(function () {
     /*
     | Riwayat Posting
     */
+=======
+    // Jadwal Posting
+    Route::get('/schedule', [ScheduleController::class, 'index'])
+        ->name('schedule.index');
+
+    // Riwayat Posting
+>>>>>>> 66d0ac889e53a75ebc4a07ce64df67b3065f4903
     Route::get('/history', [HistoryController::class, 'index'])
         ->name('history.index');
 
@@ -158,6 +178,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/history/{post}/retry-all', [HistoryController::class, 'retryAll'])
         ->name('history.retry-all');
 
+<<<<<<< HEAD
     /*
     | Notifikasi
     */
@@ -170,16 +191,32 @@ Route::middleware('auth')->group(function () {
     /*
     | Profil
     */
+=======
+    // Profil
+>>>>>>> 66d0ac889e53a75ebc4a07ce64df67b3065f4903
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
 
     Route::patch('/profile', [ProfileController::class, 'update'])
         ->name('profile.update');
 
+    // Hapus foto profil
+    Route::delete('/profile/photo', [ProfileController::class, 'deletePhoto'])
+        ->name('profile.photo.delete');
+
+    // Hapus akun pengguna
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 });
 
+<<<<<<< HEAD
 Schedule::command('sosmed:clean-temp --hours=24')->hourly();
+=======
+/*
+|--------------------------------------------------------------------------
+| Route Autentikasi Laravel
+|--------------------------------------------------------------------------
+*/
+>>>>>>> 66d0ac889e53a75ebc4a07ce64df67b3065f4903
 
 require __DIR__.'/auth.php';
